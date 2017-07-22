@@ -2,26 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class scriptPassagewayConnection : MonoBehaviour 
+public class scriptPassagewayConnection: MonoBehaviour 
 {
 
-    // Inspector Variables
+	// Inspector Variables
 
-    public GameObject passagewayA;          // the passageways that are linked together
-    public GameObject passagewayB;
+	public GameObject passagewayA; // the passageways that are linked together
+	public GameObject passagewayB;
 
-    // Private Variables
+	// Private Variables
 
 
 	// Use this for initialization
-	void Start () 
+	void Start() 
     {
-		
+
 	}
-	
+
 	// Update is called once per frame
-	void Update () 
+	void Update() 
     {
-		
+
 	}
 }
