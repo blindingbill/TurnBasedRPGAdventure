@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class scriptGameManager : MonoBehaviour 
 {
 	// Inspector Variables
 	public GameObject renderManager;              	// Manages the scale and other details for the rendering of the UI
+    public GameObject menuManager;                  // Manages the hierarchy of menus, and what is currently selected
 	public GameObject world;                      	// The world that this instance of the game takes place in (there should only ever be one being developed, but who knows)
 	public GameObject player;                     	// The player character for this instance of the game
 	// !add currentTime later!
@@ -30,6 +32,9 @@ public class scriptGameManager : MonoBehaviour
         playerCurrentLevelLocation = scriptWorld.getLocationOfEntity(player, true);
         playerCurrentRoomLocation = scriptWorld.getLocationOfEntity(player);
 
+        // Menu manager functions
+        var scriptMenuManager = menuManager.GetComponent<scriptMenuManager>();
+        scriptMenuManager.updateAllMapSubsectionsWithPlayerLevelLocation(playerCurrentLevelLocation);
 
 		checkInputs();	// check for directional inputs and move menu selections accordingly
 	}
@@ -73,6 +78,21 @@ public class scriptGameManager : MonoBehaviour
         {
             scriptCurrentLevelLocation.moveRoomSelection(xTranslation, yTranslation);
             scriptWorld.translateEntityInTheirLevel(player.gameObject, xTranslation, yTranslation);
+        }
+
+
+        // Menu Toggle Inputs
+        var scriptMenuManager = menuManager.GetComponent<scriptMenuManager>();
+
+        // Select Map Menu
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            GameObject mapMenuSearchResult = scriptMenuManager.menus.SingleOrDefault(menu => menu.GetComponent<scriptMenu>().tag == "LevelMapMenu");
+
+            if (mapMenuSearchResult != null)
+            {
+                scriptMenuManager.changeSelectedMenu(mapMenuSearchResult);
+            }
         }
 	}
 }

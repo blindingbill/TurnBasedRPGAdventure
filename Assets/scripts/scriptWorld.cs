@@ -30,7 +30,7 @@ public class scriptWorld : MonoBehaviour
 	{
 		foreach(GameObject level in levels) 
 		{
-			var roomSearchResult = level.GetComponent<scriptLevel>().getRoomThatContainsSpecifiedEntity(inputEntity);
+			GameObject roomSearchResult = level.GetComponent<scriptLevel>().getRoomThatContainsSpecifiedEntity(inputEntity);
 
 			if (roomSearchResult != null) 
 			{
@@ -62,8 +62,8 @@ public class scriptWorld : MonoBehaviour
 	{
         var scriptLevelContainingEntityToMove = getLocationOfEntity(entityToMove, true).GetComponent<scriptLevel>();
         var scriptRoomContainingEntityToMove = scriptLevelContainingEntityToMove.getRoomThatContainsSpecifiedEntity(entityToMove).GetComponent<scriptRoom>();
-        GameObject targetRoom = scriptLevelContainingEntityToMove.getRoomByCoordinates(scriptRoomContainingEntityToMove.xPosition + xChange,
-                                                                                        scriptRoomContainingEntityToMove.yPosition + yChange);
+        GameObject targetRoom = scriptLevelContainingEntityToMove.getRoomByCoordinates(scriptRoomContainingEntityToMove.xSimplePosition + xChange,
+                                                                                        scriptRoomContainingEntityToMove.ySimplePosition + yChange);
 
         if (targetRoom != null) // Check if target room exists
         {

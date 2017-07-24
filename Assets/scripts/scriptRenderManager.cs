@@ -13,7 +13,7 @@ public class scriptRenderManager: MonoBehaviour
 	public float yScaleRooms; // the vertical scale the rooms are rendered at on the map
 	public float pathWidth; // the standard width that the passageway connections are rendered at
 
-	public float zScaleAll; // the z scale of map renderings, is pointless as long as it isn't 0, and will probably be phased out later
+	public float zScaleAll; // the z scale of everything that's rendered, since the game is 2D I don't think this will matter and might be phased out later, keep it above 0 but not too big to affect layers
 
 	public float thumbnailMapGridScale; // the scale of one grid cell on the thumbnail map for the HUD
 
@@ -44,11 +44,11 @@ public class scriptRenderManager: MonoBehaviour
 
 	void renderRooms(GameObject levelToRender, float gridScale, float smallestRoomScale, float xForMapOriginPoint, float yForMapOriginPoint, float yScaleRooms) 
     {
-		foreach(GameObject room in levelToRender.GetComponent <scriptLevel> ().rooms) 
+		foreach(GameObject room in levelToRender.GetComponent<scriptLevel>().rooms) 
         {
-			var scriptRoom = room.GetComponent <scriptRoom>();
-			float xForGeographicalRoomPosition = scriptRoom.xPosition; // x coordinate for this room's game-world position (not where it's being rendered on screen)
-			float yForGeographicalRoomPosition = scriptRoom.yPosition; // y coordinate for this room's game-world position (not where it's being rendered on screen)
+			var scriptRoom = room.GetComponent<scriptRoom>();
+			float xForGeographicalRoomPosition = scriptRoom.xSimplePosition; // x coordinate for this room's game-world position (not where it's being rendered on screen)
+			float yForGeographicalRoomPosition = scriptRoom.ySimplePosition; // y coordinate for this room's game-world position (not where it's being rendered on screen)
 			float geographicalRoomSize = scriptRoom.size; // this room's game-world size (not the size it's being rendered at on screen)
 
 			// Position room on map
@@ -91,7 +91,7 @@ public class scriptRenderManager: MonoBehaviour
 				var scriptRoomContainingPassagewayB = roomContainingPassagewayB.GetComponent <scriptRoom>();
 
 				// check if the rooms are on the same floor
-				if (scriptRoomContainingPassagewayA.zPosition == scriptRoomContainingPassagewayB.zPosition) 
+				if (scriptRoomContainingPassagewayA.zSimplePosition == scriptRoomContainingPassagewayB.zSimplePosition) 
                 {
 					// if true, render a passageway between two touching rooms on the same floor
 					// find the angle for a line between to two rooms that it links together

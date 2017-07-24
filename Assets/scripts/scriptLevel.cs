@@ -34,16 +34,19 @@ public class scriptLevel: MonoBehaviour
 	public GameObject getRoomByCoordinates(float xInput, float yInput) 
 	{
 		return rooms.SingleOrDefault(room =>
-			room.GetComponent < scriptRoom > ().xPosition == xInput && room.GetComponent < scriptRoom > ().yPosition == yInput);
+			room.GetComponent<scriptRoom>().xSimplePosition == xInput &&
+            room.GetComponent<scriptRoom>().ySimplePosition == yInput);
 	}
 
 	// Return the room that contains the specified entity
 	public GameObject getRoomThatContainsSpecifiedEntity(GameObject inputEntity) 
 	{
-		foreach(GameObject room in rooms) {
-			var roomSearchResult = room.GetComponent < scriptRoom > ().entities.SingleOrDefault(entity => entity == inputEntity);
+		foreach(GameObject room in rooms) 
+        {
+			GameObject roomSearchResult = room.GetComponent<scriptRoom>().entities.SingleOrDefault(entity => entity == inputEntity);
 
-			if (roomSearchResult != null) {
+			if (roomSearchResult != null) 
+            {
 				return room; // return room if the specified entity is located in it
 			}
 		}
