@@ -42,6 +42,65 @@ public class scriptRenderManager: MonoBehaviour
 		renderPassagewayConnections(levelToRender, gridScale, xForFullsizeMapOriginPoint, yForOriginPoint, yScaleRooms);
 	}
 
+    public void renderMenu(GameObject menuToRender)
+    {
+        var scriptMenuInput = menuToRender.GetComponent<scriptMenu>();
+        foreach (GameObject menuSection in scriptMenuInput.menuSections)
+        {
+            Debug.Log("Menu " + menuToRender.name + ": " + menuSection.name);
+            renderMenuSection(menuSection);
+        }
+    }
+
+    public void renderMenuSection(GameObject menuSectionToRender)
+    {
+        var scriptMenuSectionInput = menuSectionToRender.GetComponent<scriptMenuSection>();
+        foreach (GameObject menuSubsection in scriptMenuSectionInput.subsections)
+        {
+            renderMenuSubsection(menuSubsection);
+        }
+    }
+
+    public void renderMenuSubsection(GameObject menuSubsectionToRender)
+    {
+        var scriptMenuSubsectionInput = menuSubsectionToRender.GetComponent<scriptMenuSubsection>();
+        foreach (GameObject option in scriptMenuSubsectionInput.options)
+        {
+            renderMenuOption(menuSubsectionToRender, option);
+        }
+    }
+
+    public void renderMenuOption(GameObject subsectionContainingOptionToRender, GameObject menuOptionToRender)
+    {
+        var scriptSubsectionContainingOptionToRender = subsectionContainingOptionToRender.GetComponent<scriptMenuSubsection>();
+        var scriptMenuOptionToRender = menuOptionToRender.GetComponent<scriptMenuOption>();
+        var xToRenderAt = scriptSubsectionContainingOptionToRender.originPointX + (scriptMenuOptionToRender.xSimplePosition * scriptSubsectionContainingOptionToRender.optionCellDefaultWidth);
+        var yToRenderAt = scriptSubsectionContainingOptionToRender.originPointY + (scriptMenuOptionToRender.ySimplePosition * scriptSubsectionContainingOptionToRender.optionCellDefaultHeight);
+        var zToRenderAt = -0.1f;
+
+        // Position option on screen
+        menuOptionToRender.transform.position = new Vector3(xToRenderAt,        // x coordinate to render this room at (offset from the map origin point by the game-world position of the room multiplied by the map scale)
+            yToRenderAt,                                                        // y coordinate to render this room at (offset from the map origin point by the game-world position of the room multiplied by the map scale)
+            zToRenderAt);                                                       // HACK: z coordinate to render on a specific layer, should be made customizable in inspector, but I think a lot of layering could end up changing based on context
+
+        // Scale room on map
+        scriptMenuOptionToRender.transform.localScale = new Vector3(scriptSubsectionContainingOptionToRender.optionCellDefaultWidth * scriptSubsectionContainingOptionToRender.optionGraphicDefaultWidthScale,
+            scriptSubsectionContainingOptionToRender.optionCellDefaultHeight * scriptSubsectionContainingOptionToRender.optionGraphicDefaultHeightScale,
+            zScaleAll);
+
+//        // Render room color based on selection (will probably be phased out or altered as the visual style is implemented)
+//        bool isSelected = scriptRoom.isSelected; // is this the room the player is selecting on the map?
+//        var roomRenderer = room.GetComponent <Renderer>();
+//        if (isSelected == true) 
+//        {
+//            roomRenderer.material.color = new Color(1, 0, 0, 1);
+//        } 
+//        else 
+//        {
+//            roomRenderer.material.color = new Color(1, 1, 1, 1);
+//        }
+    }
+
 	void renderRooms(GameObject levelToRender, float gridScale, float smallestRoomScale, float xForMapOriginPoint, float yForMapOriginPoint, float yScaleRooms) 
     {
 		foreach(GameObject room in levelToRender.GetComponent<scriptLevel>().rooms) 

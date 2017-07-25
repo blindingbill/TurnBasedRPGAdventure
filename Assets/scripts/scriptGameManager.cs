@@ -36,6 +36,13 @@ public class scriptGameManager : MonoBehaviour
         var scriptMenuManager = menuManager.GetComponent<scriptMenuManager>();
         scriptMenuManager.updateAllMapSubsectionsWithPlayerLevelLocation(playerCurrentLevelLocation);
 
+        // Render manager functions
+        var scriptRenderManager = renderManager.GetComponent<scriptRenderManager>();
+        foreach (GameObject menu in scriptMenuManager.menus)
+        {
+            scriptRenderManager.renderMenu(menu);
+        }
+            
 		checkInputs();	// check for directional inputs and move menu selections accordingly
 	}
 

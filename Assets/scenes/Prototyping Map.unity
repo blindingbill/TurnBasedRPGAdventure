@@ -326,57 +326,6 @@ GameObject:
   m_PrefabParentObject: {fileID: 1534415822894410, guid: d7b798082fbf03f4abda567d067cbda6,
     type: 2}
   m_PrefabInternal: {fileID: 2107545965}
---- !u!1001 &152418919
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4145998004423774, guid: 2601d75321ac288488cd6c1f64e92208, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0.1531812
-      objectReference: {fileID: 0}
-    - target: {fileID: 4145998004423774, guid: 2601d75321ac288488cd6c1f64e92208, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: -0.08566562
-      objectReference: {fileID: 0}
-    - target: {fileID: 4145998004423774, guid: 2601d75321ac288488cd6c1f64e92208, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: -1.5585938
-      objectReference: {fileID: 0}
-    - target: {fileID: 4145998004423774, guid: 2601d75321ac288488cd6c1f64e92208, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4145998004423774, guid: 2601d75321ac288488cd6c1f64e92208, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4145998004423774, guid: 2601d75321ac288488cd6c1f64e92208, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4145998004423774, guid: 2601d75321ac288488cd6c1f64e92208, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4145998004423774, guid: 2601d75321ac288488cd6c1f64e92208, type: 2}
-      propertyPath: m_RootOrder
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 1863951322068676, guid: 2601d75321ac288488cd6c1f64e92208, type: 2}
-      propertyPath: m_Name
-      value: prefabMenuOptionStandard
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 2601d75321ac288488cd6c1f64e92208, type: 2}
-  m_IsPrefabParent: 0
---- !u!1 &152418920 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1863951322068676, guid: 2601d75321ac288488cd6c1f64e92208,
-    type: 2}
-  m_PrefabInternal: {fileID: 152418919}
 --- !u!1 &190959291 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 1608797827733776, guid: ed6deb5b19594644c8119aab478a74a6,
@@ -727,7 +676,8 @@ Prefab:
         type: 2}
       propertyPath: standardOptionGameObject
       value: 
-      objectReference: {fileID: 152418920}
+      objectReference: {fileID: 1863951322068676, guid: 2601d75321ac288488cd6c1f64e92208,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 647a82583b686e442a7cb26628c52f6e, type: 2}
   m_IsPrefabParent: 0
@@ -1340,18 +1290,43 @@ Prefab:
     - target: {fileID: 114001918823616088, guid: 165983aa07028a54caa84cb2c8ecf8c6,
         type: 2}
       propertyPath: xDefaultOptionSelection
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114001918823616088, guid: 165983aa07028a54caa84cb2c8ecf8c6,
         type: 2}
       propertyPath: yDefaultOptionSelection
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114001918823616088, guid: 165983aa07028a54caa84cb2c8ecf8c6,
         type: 2}
       propertyPath: currentCollectionToRepresentWithOptions
       value: 
       objectReference: {fileID: 868654347}
+    - target: {fileID: 114001918823616088, guid: 165983aa07028a54caa84cb2c8ecf8c6,
+        type: 2}
+      propertyPath: originPointX
+      value: 4.34
+      objectReference: {fileID: 0}
+    - target: {fileID: 114001918823616088, guid: 165983aa07028a54caa84cb2c8ecf8c6,
+        type: 2}
+      propertyPath: optionGraphicDefaultWidthScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114001918823616088, guid: 165983aa07028a54caa84cb2c8ecf8c6,
+        type: 2}
+      propertyPath: optionGraphicDefaultHeightScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114001918823616088, guid: 165983aa07028a54caa84cb2c8ecf8c6,
+        type: 2}
+      propertyPath: optionCellDefaultWidth
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114001918823616088, guid: 165983aa07028a54caa84cb2c8ecf8c6,
+        type: 2}
+      propertyPath: optionCellDefaultHeight
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 165983aa07028a54caa84cb2c8ecf8c6, type: 2}
   m_IsPrefabParent: 0

@@ -13,8 +13,8 @@ public class scriptMenuSubsection: MonoBehaviour
     public float ySimplePosition;                                   // simple y coordinate for where this subsection is positioned in the section, not nessesarily where it is rendered on the screen
     public float originPointX;                                      // the origin point that this subsection will render at
     public float originPointY;
-    public float optionGraphicDefaultWidth;                         // the default horizontal length of an option graphic for this subsection
-    public float optionGraphicDefaultHeight;                        // the default vertical length of an option graphic for this subsection
+    public float optionGraphicDefaultWidthScale;                    // the default horizontal length scale (scale within cell) of an option graphic for this subsection
+    public float optionGraphicDefaultHeightScale;                   // the default vertical length scale (scale within cell) of an option graphic for this subsection
     public float optionCellDefaultWidth;                            // the default horizontal length of a grid cell for this subsection
     public float optionCellDefaultHeight;                           // the default vertical length of a grid cell for this subsection
     public float xCurrentOptionSelection;                           // the x coordinate of the currently selected option
