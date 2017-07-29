@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class scriptMenuSection: MonoBehaviour 
 {
@@ -27,5 +28,13 @@ public class scriptMenuSection: MonoBehaviour
     void Update() 
     {
 
+    }
+
+    // Return the subsection object located at the coordinate parameters
+    public GameObject getSubsectionByCoordinates(float xInput, float yInput) 
+    {
+        return subsections.SingleOrDefault(subsection =>
+            subsection.GetComponent<scriptMenuSubsection>().xSimplePosition == xInput &&
+            subsection.GetComponent<scriptMenuSubsection>().ySimplePosition == yInput);
     }
 }

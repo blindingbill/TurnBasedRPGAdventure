@@ -1310,12 +1310,12 @@ Prefab:
     - target: {fileID: 114001918823616088, guid: 165983aa07028a54caa84cb2c8ecf8c6,
         type: 2}
       propertyPath: optionGraphicDefaultWidthScale
-      value: 1
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 114001918823616088, guid: 165983aa07028a54caa84cb2c8ecf8c6,
         type: 2}
       propertyPath: optionGraphicDefaultHeightScale
-      value: 1
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 114001918823616088, guid: 165983aa07028a54caa84cb2c8ecf8c6,
         type: 2}
@@ -1325,6 +1325,26 @@ Prefab:
     - target: {fileID: 114001918823616088, guid: 165983aa07028a54caa84cb2c8ecf8c6,
         type: 2}
       propertyPath: optionCellDefaultHeight
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114001918823616088, guid: 165983aa07028a54caa84cb2c8ecf8c6,
+        type: 2}
+      propertyPath: optionGraphicDefaultXScale
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114001918823616088, guid: 165983aa07028a54caa84cb2c8ecf8c6,
+        type: 2}
+      propertyPath: optionGraphicDefaultYScale
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114001918823616088, guid: 165983aa07028a54caa84cb2c8ecf8c6,
+        type: 2}
+      propertyPath: optionCellDefaultXLength
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114001918823616088, guid: 165983aa07028a54caa84cb2c8ecf8c6,
+        type: 2}
+      propertyPath: optionCellDefaultYLength
       value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []

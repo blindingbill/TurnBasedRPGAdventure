@@ -6,7 +6,7 @@ public class scriptMenuManager: MonoBehaviour
 {
     // Inspector Variables
     public List<GameObject> menus;              // the major menus that make up the game, a menu generally takes up an entire screen is overlayed over the main menu with a button
-    public GameObject selectedMenu;             // the current menu that is in focus
+    public GameObject currentlySelectedMenu;    // the current menu that is in focus
     public GameObject defaultSelectedMenu;      // the initial menu that will is in focus
     public GameObject standardOptionGameObject; // a basic option template to instantiate options with
 
@@ -16,7 +16,7 @@ public class scriptMenuManager: MonoBehaviour
     // Use this for initialization
     void Start() 
     {
-        selectedMenu = defaultSelectedMenu; // set currently selected menu to the default menu
+        currentlySelectedMenu = defaultSelectedMenu; // set currently selected menu to the default menu
 
         // HACK: this is just for testing
         foreach (GameObject menu in menus)
@@ -41,13 +41,13 @@ public class scriptMenuManager: MonoBehaviour
     public void changeSelectedMenu(GameObject menuSelectionInput)
     {
         // Change the menu manager's selected menu to the one provided, if that is already selected, return selection to default
-        if (selectedMenu != menuSelectionInput)
+        if (currentlySelectedMenu != menuSelectionInput)
         {
-            selectedMenu = menuSelectionInput;
+            currentlySelectedMenu = menuSelectionInput;
         }
         else
         {
-            selectedMenu = defaultSelectedMenu;
+            currentlySelectedMenu = defaultSelectedMenu;
         }
     }
 
@@ -66,24 +66,29 @@ public class scriptMenuManager: MonoBehaviour
     void generateOptionsForMenuSubsection(GameObject subsection)
     {
         var scriptMenuSubsection = subsection.GetComponent<scriptMenuSubsection>();
+        var i = 1;  // HACK: need to find a better way to generate names for these options, if it's even nessesary
 
-        // HACK: currently this process will probably only work if a collection of rooms is used, will need to add cases
-        var i = 1;
-        foreach (GameObject room in scriptMenuSubsection.currentCollectionToRepresentWithOptions.GetComponent<scriptLevel>().rooms)
+        // Find what object type the collection that will be represented with options is, so that it can be correctly converted into options
+        if (scriptMenuSubsection.currentCollectionToRepresentWithOptions.tag == "Level")
         {
-            
-            GameObject newOption = Instantiate(standardOptionGameObject);
-            var scriptNewOption = newOption.GetComponent<scriptMenuOption>();
+            // Convert rooms into options
+            foreach (GameObject room in scriptMenuSubsection.currentCollectionToRepresentWithOptions.GetComponent<scriptLevel>().rooms)
+            {
+                
+                GameObject newOption = Instantiate(standardOptionGameObject);
+                var scriptNewOption = newOption.GetComponent<scriptMenuOption>();
+                var scriptRoom = room.GetComponent<scriptRoom>();
 
-            // CASE FOR ROOM
-            var scriptRoom = room.GetComponent<scriptRoom>();
-            scriptNewOption.xSimplePosition = scriptRoom.xSimplePosition;
-            scriptNewOption.ySimplePosition = scriptRoom.ySimplePosition;
-            scriptNewOption.zSimplePosition = scriptRoom.zSimplePosition;
-            scriptNewOption.name = "Option" + i.ToString();
-            i += 1;
-            scriptMenuSubsection.options.Add(scriptNewOption.gameObject);
+                scriptNewOption.xSimplePosition = scriptRoom.xSimplePosition;
+                scriptNewOption.ySimplePosition = scriptRoom.ySimplePosition;
+                scriptNewOption.zSimplePosition = scriptRoom.zSimplePosition;
+                scriptNewOption.optionGraphicCustomYScale = scriptMenuSubsection.optionGraphicDefaultYScale * (scriptRoom.size + 1);
+                scriptNewOption.optionGraphicCustomXScale = scriptMenuSubsection.optionGraphicDefaultXScale * (scriptRoom.size + 1);
+
+                scriptNewOption.name = "Option" + i.ToString();
+                i += 1;
+                scriptMenuSubsection.options.Add(scriptNewOption.gameObject);
+            }
         }
-
     }
 }

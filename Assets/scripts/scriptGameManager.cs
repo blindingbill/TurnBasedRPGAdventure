@@ -85,6 +85,7 @@ public class scriptGameManager : MonoBehaviour
         {
             scriptCurrentLevelLocation.moveRoomSelection(xTranslation, yTranslation);
             scriptWorld.translateEntityInTheirLevel(player.gameObject, xTranslation, yTranslation);
+            menuManager.GetComponent<scriptMenuManager>().currentlySelectedMenu.GetComponent<scriptMenu>().moveCurrentOptionSelectionUsingDirectionalInput(xTranslation, yTranslation);
         }
 
 

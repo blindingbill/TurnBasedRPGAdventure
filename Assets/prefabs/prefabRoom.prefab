@@ -25,7 +25,7 @@ GameObject:
   - component: {fileID: 114018684299915546}
   m_Layer: 0
   m_Name: prefabRoom
-  m_TagString: Untagged
+  m_TagString: Room
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -104,9 +104,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c7903c876b083c4b93efde9308b9f1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xPosition: 0
-  yPosition: 0
-  zPosition: 0
+  xSimplePosition: 0
+  ySimplePosition: 0
+  zSimplePosition: 0
   size: 0
   entities: []
   isSelected: 0

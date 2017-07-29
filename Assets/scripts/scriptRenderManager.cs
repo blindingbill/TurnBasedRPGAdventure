@@ -47,7 +47,6 @@ public class scriptRenderManager: MonoBehaviour
         var scriptMenuInput = menuToRender.GetComponent<scriptMenu>();
         foreach (GameObject menuSection in scriptMenuInput.menuSections)
         {
-            Debug.Log("Menu " + menuToRender.name + ": " + menuSection.name);
             renderMenuSection(menuSection);
         }
     }
@@ -74,31 +73,43 @@ public class scriptRenderManager: MonoBehaviour
     {
         var scriptSubsectionContainingOptionToRender = subsectionContainingOptionToRender.GetComponent<scriptMenuSubsection>();
         var scriptMenuOptionToRender = menuOptionToRender.GetComponent<scriptMenuOption>();
-        var xToRenderAt = scriptSubsectionContainingOptionToRender.originPointX + (scriptMenuOptionToRender.xSimplePosition * scriptSubsectionContainingOptionToRender.optionCellDefaultWidth);
-        var yToRenderAt = scriptSubsectionContainingOptionToRender.originPointY + (scriptMenuOptionToRender.ySimplePosition * scriptSubsectionContainingOptionToRender.optionCellDefaultHeight);
+        var xToRenderAt = scriptSubsectionContainingOptionToRender.originPointX + (scriptMenuOptionToRender.xSimplePosition * scriptSubsectionContainingOptionToRender.optionCellDefaultXLength);
+        var yToRenderAt = scriptSubsectionContainingOptionToRender.originPointY + (scriptMenuOptionToRender.ySimplePosition * scriptSubsectionContainingOptionToRender.optionCellDefaultYLength);
         var zToRenderAt = -0.1f;
 
-        // Position option on screen
+        // Position option
         menuOptionToRender.transform.position = new Vector3(xToRenderAt,        // x coordinate to render this room at (offset from the map origin point by the game-world position of the room multiplied by the map scale)
             yToRenderAt,                                                        // y coordinate to render this room at (offset from the map origin point by the game-world position of the room multiplied by the map scale)
             zToRenderAt);                                                       // HACK: z coordinate to render on a specific layer, should be made customizable in inspector, but I think a lot of layering could end up changing based on context
 
-        // Scale room on map
-        scriptMenuOptionToRender.transform.localScale = new Vector3(scriptSubsectionContainingOptionToRender.optionCellDefaultWidth * scriptSubsectionContainingOptionToRender.optionGraphicDefaultWidthScale,
-            scriptSubsectionContainingOptionToRender.optionCellDefaultHeight * scriptSubsectionContainingOptionToRender.optionGraphicDefaultHeightScale,
+
+        // Scale option
+        float xScale = scriptSubsectionContainingOptionToRender.optionGraphicDefaultXScale;
+        float yScale = scriptSubsectionContainingOptionToRender.optionGraphicDefaultYScale;
+        if (scriptMenuOptionToRender.optionGraphicCustomXScale != 0)            // if an option has a custom xy scale, use that instead
+            xScale = scriptMenuOptionToRender.optionGraphicCustomXScale;
+        if (scriptMenuOptionToRender.optionGraphicCustomYScale != 0)
+            yScale = scriptMenuOptionToRender.optionGraphicCustomYScale;
+
+        scriptMenuOptionToRender.transform.localScale = new Vector3(scriptSubsectionContainingOptionToRender.optionCellDefaultXLength * xScale,
+            scriptSubsectionContainingOptionToRender.optionCellDefaultYLength * yScale,
             zScaleAll);
 
-//        // Render room color based on selection (will probably be phased out or altered as the visual style is implemented)
-//        bool isSelected = scriptRoom.isSelected; // is this the room the player is selecting on the map?
-//        var roomRenderer = room.GetComponent <Renderer>();
-//        if (isSelected == true) 
-//        {
-//            roomRenderer.material.color = new Color(1, 0, 0, 1);
-//        } 
-//        else 
-//        {
-//            roomRenderer.material.color = new Color(1, 1, 1, 1);
-//        }
+
+        // Generate graphic based on if the option is selected by its subsection
+        bool isSelected = (menuOptionToRender == scriptSubsectionContainingOptionToRender.getCurrentlySelectedOption()); // is this option selected by its subsection?
+
+        var optionRenderer = scriptMenuOptionToRender.GetComponent<Renderer>();
+        if (isSelected == true) 
+        {
+            optionRenderer.material.color = new Color(1, 0, 0, 1);
+        } 
+        else 
+        {
+            optionRenderer.material.color = new Color(1, 1, 1, 1);
+        }
+
+          // TO DEVELOP!! Extra case for rendering paths if the subsection is of the MenuSubsectionWithLevelMap tag
     }
 
 	void renderRooms(GameObject levelToRender, float gridScale, float smallestRoomScale, float xForMapOriginPoint, float yForMapOriginPoint, float yScaleRooms) 

@@ -8,12 +8,12 @@ public class scriptMenuOption: MonoBehaviour
     public float xSimplePosition;                   // simple x coordinate for where this option is positioned in the section, not nessesarily where it is rendered on the screen
     public float ySimplePosition;                   // simple y coordinate for where this option is positioned in the section, not nessesarily where it is rendered on the screen
     public float zSimplePosition;                   // simple z coordinate for where this option is positioned in the section, not nessesarily where it is rendered on the screen
-    public float optionGraphicCustomWidthScale;     // the custom horizontal scale of this option graphic
-    public float optionGraphicCustomHeightScale;    // the custom vertical scale of this option graphic
-    public float optionGraphicCustomWidth;          // the custom horizontal length of this option graphic
-    public float optionGraphicCustomHeight;         // the custom vertical length of this option graphic
-    public float optionCellCustomWidth;             // the custom horizontal length of this grid cell
-    public float optionCellCustomHeight;            // the custom vertical length of this grid cell
+    public float optionGraphicCustomXScale;         // the custom horizontal scale of this option graphic
+    public float optionGraphicCustomYScale;         // the custom vertical scale of this option graphic
+    public float optionGraphicCustomXLength;        // the custom horizontal length of this option graphic
+    public float optionGraphicCustomYLength;        // the custom vertical length of this option graphic
+    public float optionCellCustomXLength;           // the custom horizontal length of this grid cell
+    public float optionCellCustomYLength;           // the custom vertical length of this grid cell
 
     // Private Variables
 

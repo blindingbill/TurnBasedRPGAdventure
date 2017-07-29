@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class scriptMenuSubsection: MonoBehaviour 
 {
@@ -13,10 +14,10 @@ public class scriptMenuSubsection: MonoBehaviour
     public float ySimplePosition;                                   // simple y coordinate for where this subsection is positioned in the section, not nessesarily where it is rendered on the screen
     public float originPointX;                                      // the origin point that this subsection will render at
     public float originPointY;
-    public float optionGraphicDefaultWidthScale;                    // the default horizontal length scale (scale within cell) of an option graphic for this subsection
-    public float optionGraphicDefaultHeightScale;                   // the default vertical length scale (scale within cell) of an option graphic for this subsection
-    public float optionCellDefaultWidth;                            // the default horizontal length of a grid cell for this subsection
-    public float optionCellDefaultHeight;                           // the default vertical length of a grid cell for this subsection
+    public float optionGraphicDefaultXScale;                        // the default horizontal length scale (scale within cell) of an option graphic for this subsection
+    public float optionGraphicDefaultYScale;                        // the default vertical length scale (scale within cell) of an option graphic for this subsection
+    public float optionCellDefaultXLength;                          // the default horizontal length of a grid cell for this subsection
+    public float optionCellDefaultYLength;                          // the default vertical length of a grid cell for this subsection
     public float xCurrentOptionSelection;                           // the x coordinate of the currently selected option
     public float yCurrentOptionSelection;                           // the y coordinate of the currently selected option
     public List<GameObject> options;                                // the option gameobjects generated from the collectionToRepresentWithOptions
@@ -37,5 +38,18 @@ public class scriptMenuSubsection: MonoBehaviour
     void Update() 
     {
 
+    }
+
+    // Return the subsection object located at the coordinate parameters
+    public GameObject getOptionByCoordinates(float xInput, float yInput) 
+    {
+        return options.SingleOrDefault(option =>
+            option.GetComponent<scriptMenuOption>().xSimplePosition == xInput &&
+            option.GetComponent<scriptMenuOption>().ySimplePosition == yInput);
+    }
+
+    public GameObject getCurrentlySelectedOption()
+    {
+        return getOptionByCoordinates(xCurrentOptionSelection, yCurrentOptionSelection);
     }
 }

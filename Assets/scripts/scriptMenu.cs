@@ -24,4 +24,47 @@ public class scriptMenu: MonoBehaviour
     {
 
     }
+
+    // Move the current option selection in this menu based on xy input
+    public void moveCurrentOptionSelectionUsingDirectionalInput(float xInput, float yInput)
+    {
+        var scriptCurrentlySelectedSubsection = getCurrentlySelectedSubsection().GetComponent<scriptMenuSubsection>();
+        GameObject targetOption = scriptCurrentlySelectedSubsection.getOptionByCoordinates(scriptCurrentlySelectedSubsection.xCurrentOptionSelection + xInput,
+            scriptCurrentlySelectedSubsection.yCurrentOptionSelection + yInput);
+        if (targetOption != null)
+        {
+            scriptCurrentlySelectedSubsection.xCurrentOptionSelection += xInput;
+            scriptCurrentlySelectedSubsection.yCurrentOptionSelection += yInput;
+        } 
+        else 
+        {
+            Debug.Log("WARNING: There is no option to select based on player inputs, if there's an option in the direction being input, there may be an error.");
+        }
+    }
+
+    // Get the subsection in the entire menu that the player currently has selected
+    public GameObject getCurrentlySelectedSubsection()
+    {
+        var scriptCurrentlySelectedMenuSection = currentlySelectedMenuSection.GetComponent<scriptMenuSection>();
+        GameObject currentlySelectedMenuSubsection = scriptCurrentlySelectedMenuSection.getSubsectionByCoordinates(
+            scriptCurrentlySelectedMenuSection.xCurrentSubsectionSelection,
+            scriptCurrentlySelectedMenuSection.yCurrentSubsectionSelection);
+
+        return currentlySelectedMenuSubsection;
+    }
+
+    // Get the option in the entire menu that the player currently has selected
+    public GameObject getCurrentlySelectedOption()
+    {
+        var scriptCurrentlySelectedMenuSection = currentlySelectedMenuSection.GetComponent<scriptMenuSection>();
+        GameObject currentlySelectedMenuSubsection = scriptCurrentlySelectedMenuSection.getSubsectionByCoordinates(
+                                                         scriptCurrentlySelectedMenuSection.xCurrentSubsectionSelection,
+                                                         scriptCurrentlySelectedMenuSection.yCurrentSubsectionSelection);
+        var scriptCurrentlySelectedMenuSubsection = currentlySelectedMenuSubsection.GetComponent<scriptMenuSubsection>();
+        GameObject currentlySelectedOption = scriptCurrentlySelectedMenuSubsection.getOptionByCoordinates(
+            scriptCurrentlySelectedMenuSubsection.xCurrentOptionSelection,
+            scriptCurrentlySelectedMenuSubsection.yCurrentOptionSelection);
+
+        return currentlySelectedOption;
+    }
 }

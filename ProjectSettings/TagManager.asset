@@ -6,6 +6,8 @@ TagManager:
   tags:
   - LevelMapMenu
   - MenuSubsectionWithLevelMap
+  - Room
+  - Level
   layers:
   - Default
   - TransparentFX
