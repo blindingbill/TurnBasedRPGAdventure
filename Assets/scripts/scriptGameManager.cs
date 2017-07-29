@@ -34,13 +34,13 @@ public class scriptGameManager : MonoBehaviour
 
         // Menu manager functions
         var scriptMenuManager = menuManager.GetComponent<scriptMenuManager>();
-        scriptMenuManager.updateAllMapSubsectionsWithPlayerLevelLocation(playerCurrentLevelLocation);
+//        scriptMenuManager.updateAllMapSubsectionsWithPlayerLevelLocation(playerCurrentLevelLocation);
 
         // Render manager functions
         var scriptRenderManager = renderManager.GetComponent<scriptRenderManager>();
-        foreach (GameObject menu in scriptMenuManager.menus)
+        foreach (GameObject majorMenuDiv in scriptMenuManager.majorMenuDivs)
         {
-            scriptRenderManager.renderMenu(menu);
+            scriptRenderManager.renderMenuDiv(majorMenuDiv);
         }
             
 		checkInputs();	// check for directional inputs and move menu selections accordingly
@@ -85,22 +85,25 @@ public class scriptGameManager : MonoBehaviour
         {
             scriptCurrentLevelLocation.moveRoomSelection(xTranslation, yTranslation);
             scriptWorld.translateEntityInTheirLevel(player.gameObject, xTranslation, yTranslation);
-            menuManager.GetComponent<scriptMenuManager>().currentlySelectedMenu.GetComponent<scriptMenu>().moveCurrentOptionSelectionUsingDirectionalInput(xTranslation, yTranslation);
+            var scriptMenuManager = menuManager.GetComponent<scriptMenuManager>();
+            var scriptCurrentlySelectedMenuDiv = scriptMenuManager.currentlySelectedMenuDiv.GetComponent<scriptMenuDiv>();
+
+            scriptMenuManager.moveCurrentMenuDivSelectionUsingDirectionalInput(xTranslation, yTranslation);
         }
 
 
-        // Menu Toggle Inputs
-        var scriptMenuManager = menuManager.GetComponent<scriptMenuManager>();
-
-        // Select Map Menu
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            GameObject mapMenuSearchResult = scriptMenuManager.menus.SingleOrDefault(menu => menu.GetComponent<scriptMenu>().tag == "LevelMapMenu");
-
-            if (mapMenuSearchResult != null)
-            {
-                scriptMenuManager.changeSelectedMenu(mapMenuSearchResult);
-            }
-        }
+//        // Menu Toggle Inputs
+//        scriptMenuManager = menuManager.GetComponent<scriptMenuManager>();
+//
+//        // Select Map Menu
+//        if (Input.GetKeyDown(KeyCode.Space))
+//        {
+//            GameObject mapMenuSearchResult = scriptMenuManager.majorMenuDivs.SingleOrDefault(majorMenuDiv => majorMenuDiv.GetComponent<scriptMenuDiv>().tag == "LevelMapMenu");
+//
+//            if (mapMenuSearchResult != null)
+//            {
+//                scriptMenuManager.changeSelectedMajorMenuDivUsingHotkey(mapMenuSearchResult);
+//            }
+//        }
 	}
 }

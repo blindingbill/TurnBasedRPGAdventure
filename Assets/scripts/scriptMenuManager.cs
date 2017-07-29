@@ -5,10 +5,10 @@ using UnityEngine;
 public class scriptMenuManager: MonoBehaviour 
 {
     // Inspector Variables
-    public List<GameObject> menus;              // the major menus that make up the game, a menu generally takes up an entire screen is overlayed over the main menu with a button
-    public GameObject currentlySelectedMenu;    // the current menu that is in focus
-    public GameObject defaultSelectedMenu;      // the initial menu that will is in focus
-    public GameObject standardOptionGameObject; // a basic option template to instantiate options with
+    public List<GameObject> majorMenuDivs;          // the major menus that make up the game, a menu generally takes up an entire screen and is overlayed over the main menu with a player input
+    public GameObject currentlySelectedMenuDiv;     // the current menu that is in focus
+    public GameObject defaultSelectedMenuDiv;       // the initial menu that will is in focus
+    public GameObject prefabMenuDiv;                // the basic menudiv template to instantiate menudivs with
 
     // Private Variables
 
@@ -16,16 +16,16 @@ public class scriptMenuManager: MonoBehaviour
     // Use this for initialization
     void Start() 
     {
-        currentlySelectedMenu = defaultSelectedMenu; // set currently selected menu to the default menu
+        currentlySelectedMenuDiv = defaultSelectedMenuDiv; // set currently selected menu to the default menu
 
         // HACK: this is just for testing
-        foreach (GameObject menu in menus)
+        foreach (GameObject majorMenuDiv in majorMenuDivs)
         {
-            foreach (GameObject section in menu.GetComponent<scriptMenu>().menuSections)
+            foreach (GameObject section in majorMenuDiv.GetComponent<scriptMenuDiv>().childMenuDivs)
             {
-                foreach (GameObject subsection in section.GetComponent<scriptMenuSection>().subsections)
+                foreach (GameObject subsection in section.GetComponent<scriptMenuDiv>().childMenuDivs)
                 {
-                    generateOptionsForMenuSubsection(subsection);
+                    generateChildrenForMenuDiv(subsection);
                 }
             }
         }
@@ -38,56 +38,77 @@ public class scriptMenuManager: MonoBehaviour
     }
 
     // Change the selected menu, and render the results
-    public void changeSelectedMenu(GameObject menuSelectionInput)
+    public void changeSelectedMajorMenuDivUsingHotkey(GameObject menuDivSelectionInput)
     {
         // Change the menu manager's selected menu to the one provided, if that is already selected, return selection to default
-        if (currentlySelectedMenu != menuSelectionInput)
+        if (currentlySelectedMenuDiv != menuDivSelectionInput)
         {
-            currentlySelectedMenu = menuSelectionInput;
+            currentlySelectedMenuDiv = menuDivSelectionInput;
         }
         else
         {
-            currentlySelectedMenu = defaultSelectedMenu;
+            currentlySelectedMenuDiv = menuDivSelectionInput;
+        }
+    }
+
+    public void moveCurrentMenuDivSelectionUsingDirectionalInput(float xInput, float yInput)
+    {
+        var scriptMenuDivContainingCurrentSelection = currentlySelectedMenuDiv.GetComponent<scriptMenuDiv>().getLowestSelectedMenuDivContainingChildren().GetComponent<scriptMenuDiv>();
+        float xTarget = scriptMenuDivContainingCurrentSelection.xCurrentChildSelection + xInput;
+        float yTarget = scriptMenuDivContainingCurrentSelection.yCurrentChildSelection + yInput;
+
+        GameObject targetMenuDiv = scriptMenuDivContainingCurrentSelection.getChildMenuDivByCoordinates(xTarget, yTarget);
+        if (targetMenuDiv != null)
+        {
+            scriptMenuDivContainingCurrentSelection.xCurrentChildSelection += xInput;
+            scriptMenuDivContainingCurrentSelection.yCurrentChildSelection += yInput;
+        }
+        else
+        {
+            Debug.Log("WARNING: There is no option to select based on player inputs, if there's an option in the direction being input, there may be an error.");
         }
     }
 
     // Update all map menu subsections with the player's current level location for their default level to render
-    public void updateAllMapSubsectionsWithPlayerLevelLocation(GameObject playerCurrentLevelLocation)
+//    public void updateAllMapSubsectionsWithPlayerLevelLocation(GameObject playerCurrentLevelLocation)
+//    {
+//        GameObject[] menuMapSubsections = GameObject.FindGameObjectsWithTag("MenuSubsectionWithLevelMap");
+//
+//        foreach (GameObject subsection in menuMapSubsections)
+//        {
+//            subsection.GetComponent<scriptMenuSubsection>().defaultCollectionToRepresentWithOptions = playerCurrentLevelLocation;
+//        }
+//    }
+
+    // Convert the collection of objects designated for a menudiv into a list child menudivs
+    void generateChildrenForMenuDiv(GameObject menuDiv)
     {
-        GameObject[] menuMapSubsections = GameObject.FindGameObjectsWithTag("MenuSubsectionWithLevelMap");
+        var scriptMenuDiv = menuDiv.GetComponent<scriptMenuDiv>();
+        var i = 1;  // HACK: need to find a better way to generate names for these children, if it's even nessesary
 
-        foreach (GameObject subsection in menuMapSubsections)
+        foreach (GameObject collection in scriptMenuDiv.currentCollectionsToConvertToChildren)
         {
-            subsection.GetComponent<scriptMenuSubsection>().defaultCollectionToRepresentWithOptions = playerCurrentLevelLocation;
-        }
-    }
-
-    // Convert the collection of objects designated for a subsection into a list of options
-    void generateOptionsForMenuSubsection(GameObject subsection)
-    {
-        var scriptMenuSubsection = subsection.GetComponent<scriptMenuSubsection>();
-        var i = 1;  // HACK: need to find a better way to generate names for these options, if it's even nessesary
-
-        // Find what object type the collection that will be represented with options is, so that it can be correctly converted into options
-        if (scriptMenuSubsection.currentCollectionToRepresentWithOptions.tag == "Level")
-        {
-            // Convert rooms into options
-            foreach (GameObject room in scriptMenuSubsection.currentCollectionToRepresentWithOptions.GetComponent<scriptLevel>().rooms)
+            // Find what object type the collection that will be represented with children is, so that it can be correctly converted into menudivs
+            if (collection.tag == "Level")
             {
-                
-                GameObject newOption = Instantiate(standardOptionGameObject);
-                var scriptNewOption = newOption.GetComponent<scriptMenuOption>();
-                var scriptRoom = room.GetComponent<scriptRoom>();
+                // Convert rooms into menudivs
+                foreach (GameObject room in collection.GetComponent<scriptLevel>().rooms)
+                {
+                    GameObject newMenuDivChild = Instantiate(prefabMenuDiv);
+                    var scriptNewMenuDivChild = newMenuDivChild.GetComponent<scriptMenuDiv>();
+                    var scriptRoom = room.GetComponent<scriptRoom>();
 
-                scriptNewOption.xSimplePosition = scriptRoom.xSimplePosition;
-                scriptNewOption.ySimplePosition = scriptRoom.ySimplePosition;
-                scriptNewOption.zSimplePosition = scriptRoom.zSimplePosition;
-                scriptNewOption.optionGraphicCustomYScale = scriptMenuSubsection.optionGraphicDefaultYScale * (scriptRoom.size + 1);
-                scriptNewOption.optionGraphicCustomXScale = scriptMenuSubsection.optionGraphicDefaultXScale * (scriptRoom.size + 1);
+                    scriptNewMenuDivChild.isInParentsSimpleGrid = true;
+                    scriptNewMenuDivChild.xSimplePosition = scriptRoom.xSimplePosition;
+                    scriptNewMenuDivChild.ySimplePosition = scriptRoom.ySimplePosition;
+                    scriptNewMenuDivChild.zSimplePosition = scriptRoom.zSimplePosition;
+                    scriptNewMenuDivChild.graphicCustomYScale = scriptMenuDiv.childGraphicDefaultYScale * (scriptRoom.size + 1);
+                    scriptNewMenuDivChild.graphicCustomXScale = scriptMenuDiv.childGraphicDefaultXScale * (scriptRoom.size + 1);
 
-                scriptNewOption.name = "Option" + i.ToString();
-                i += 1;
-                scriptMenuSubsection.options.Add(scriptNewOption.gameObject);
+                    scriptNewMenuDivChild.name = "Child" + i.ToString();
+                    i += 1;
+                    scriptMenuDiv.childMenuDivs.Add(scriptNewMenuDivChild.gameObject);
+                }
             }
         }
     }

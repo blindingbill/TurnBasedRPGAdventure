@@ -34,115 +34,104 @@ public class scriptRenderManager: MonoBehaviour
 	void Update() 
     {
 		renderLevelMap(levelToRender, fullsizeMapGridScale, fullsizeMapSmallestRoomScale, xForFullsizeMapOriginPoint, yForFullsizeMapOriginPoint, yScaleRooms); // renders the map for the isolated map menu
-	}
+    }
 
 	void renderLevelMap(GameObject levelToRender, float gridScale, float smallestRoomScale, float xForOriginPoint, float yForOriginPoint, float yScaleRooms) 
     {
-		renderRooms(levelToRender, gridScale, smallestRoomScale, xForOriginPoint, yForOriginPoint, yScaleRooms);
 		renderPassagewayConnections(levelToRender, gridScale, xForFullsizeMapOriginPoint, yForOriginPoint, yScaleRooms);
 	}
 
-    public void renderMenu(GameObject menuToRender)
+    public void renderMenuDiv(GameObject menuDivToRender, GameObject parentOfMenuDivToRender = null)
     {
-        var scriptMenuInput = menuToRender.GetComponent<scriptMenu>();
-        foreach (GameObject menuSection in scriptMenuInput.menuSections)
+        // render this menu div
+        // check for children
+        // if children, render children with renderMenuDiv (this will cover everything I think)
+
+        var scriptMenuDivToRender = menuDivToRender.GetComponent<scriptMenuDiv>();
+        var menuDivRenderer = scriptMenuDivToRender.GetComponent<Renderer>();
+        bool menuDivToRenderHasChildren = scriptMenuDivToRender.childMenuDivs.Count > 0;
+        float xToRenderAt = 0;
+        float yToRenderAt = 0;
+        float zToRenderAt = -0.1f;
+        float xGraphicScale = scriptMenuDivToRender.graphicCustomXScale;
+        float yGraphicScale = scriptMenuDivToRender.graphicCustomYScale;
+        float xCellLength = scriptMenuDivToRender.cellCustomXLength;
+        float yCellLength = scriptMenuDivToRender.cellCustomYLength;
+
+        if (scriptMenuDivToRender.usesCustomGlobalOriginPoint)
         {
-            renderMenuSection(menuSection);
+            xToRenderAt = scriptMenuDivToRender.customGlobalOriginPointX;
+            yToRenderAt = scriptMenuDivToRender.customGlobalOriginPointY;
         }
-    }
 
-    public void renderMenuSection(GameObject menuSectionToRender)
-    {
-        var scriptMenuSectionInput = menuSectionToRender.GetComponent<scriptMenuSection>();
-        foreach (GameObject menuSubsection in scriptMenuSectionInput.subsections)
+        if (parentOfMenuDivToRender != null)
         {
-            renderMenuSubsection(menuSubsection);
+            var scriptParentOfMenuDivToRender = parentOfMenuDivToRender.GetComponent<scriptMenuDiv>();
+
+            // Position
+            if (scriptMenuDivToRender.isInParentsSimpleGrid)
+            {
+                var xOffset = scriptMenuDivToRender.xSimplePosition * scriptParentOfMenuDivToRender.childCellDefaultXLength;
+                var yOffset = scriptMenuDivToRender.ySimplePosition * scriptParentOfMenuDivToRender.childCellDefaultYLength;
+
+                xToRenderAt = scriptParentOfMenuDivToRender.transform.position.x + xOffset;
+                yToRenderAt = scriptParentOfMenuDivToRender.transform.position.y + yOffset;
+            }
+
+            // Graphic Scale
+            if (xGraphicScale == 0)
+                xGraphicScale = scriptParentOfMenuDivToRender.childGraphicDefaultXScale;
+            if (yGraphicScale == 0)
+                yGraphicScale = scriptParentOfMenuDivToRender.childGraphicDefaultXScale;
+
+            // Cell Length
+            if (xCellLength == 0)
+                xCellLength = scriptParentOfMenuDivToRender.childCellDefaultXLength;
+            if (yCellLength == 0)
+                yCellLength = scriptParentOfMenuDivToRender.childCellDefaultYLength;
+
+            // HACK: isSelected color
+            GameObject currentlySelectedChild = scriptParentOfMenuDivToRender.getCurrentlySelectedChildMenuDiv();
+
+            if (currentlySelectedChild != null)
+            {
+                var scriptCurrentlySelectedChild = currentlySelectedChild.GetComponent<scriptMenuDiv>();
+                if (scriptCurrentlySelectedChild.isInParentsSimpleGrid)
+                {
+                    bool isSelected = (menuDivToRender == currentlySelectedChild); // is this option selected by its subsection?
+
+                    if (isSelected == true)
+                    {
+                        menuDivRenderer.material.color = new Color(1, 0, 0, 1);
+                    }
+                    else
+                    {
+                        menuDivRenderer.material.color = new Color(1, 1, 1, 1);
+                    }
+                }
+            }
         }
-    }
+            
+        menuDivToRender.transform.position = new Vector3(xToRenderAt,   // coordinate to render this menudiv at
+            yToRenderAt,                                                        
+            zToRenderAt);                                               // HACK: z coordinate to render on a specific layer, should be made customizable in inspector, but I think a lot of layering could end up changing based on context
 
-    public void renderMenuSubsection(GameObject menuSubsectionToRender)
-    {
-        var scriptMenuSubsectionInput = menuSubsectionToRender.GetComponent<scriptMenuSubsection>();
-        foreach (GameObject option in scriptMenuSubsectionInput.options)
-        {
-            renderMenuOption(menuSubsectionToRender, option);
-        }
-    }
-
-    public void renderMenuOption(GameObject subsectionContainingOptionToRender, GameObject menuOptionToRender)
-    {
-        var scriptSubsectionContainingOptionToRender = subsectionContainingOptionToRender.GetComponent<scriptMenuSubsection>();
-        var scriptMenuOptionToRender = menuOptionToRender.GetComponent<scriptMenuOption>();
-        var xToRenderAt = scriptSubsectionContainingOptionToRender.originPointX + (scriptMenuOptionToRender.xSimplePosition * scriptSubsectionContainingOptionToRender.optionCellDefaultXLength);
-        var yToRenderAt = scriptSubsectionContainingOptionToRender.originPointY + (scriptMenuOptionToRender.ySimplePosition * scriptSubsectionContainingOptionToRender.optionCellDefaultYLength);
-        var zToRenderAt = -0.1f;
-
-        // Position option
-        menuOptionToRender.transform.position = new Vector3(xToRenderAt,        // x coordinate to render this room at (offset from the map origin point by the game-world position of the room multiplied by the map scale)
-            yToRenderAt,                                                        // y coordinate to render this room at (offset from the map origin point by the game-world position of the room multiplied by the map scale)
-            zToRenderAt);                                                       // HACK: z coordinate to render on a specific layer, should be made customizable in inspector, but I think a lot of layering could end up changing based on context
-
-
-        // Scale option
-        float xScale = scriptSubsectionContainingOptionToRender.optionGraphicDefaultXScale;
-        float yScale = scriptSubsectionContainingOptionToRender.optionGraphicDefaultYScale;
-        if (scriptMenuOptionToRender.optionGraphicCustomXScale != 0)            // if an option has a custom xy scale, use that instead
-            xScale = scriptMenuOptionToRender.optionGraphicCustomXScale;
-        if (scriptMenuOptionToRender.optionGraphicCustomYScale != 0)
-            yScale = scriptMenuOptionToRender.optionGraphicCustomYScale;
-
-        scriptMenuOptionToRender.transform.localScale = new Vector3(scriptSubsectionContainingOptionToRender.optionCellDefaultXLength * xScale,
-            scriptSubsectionContainingOptionToRender.optionCellDefaultYLength * yScale,
+        menuDivToRender.transform.localScale = new Vector3(xCellLength * xGraphicScale,
+            yCellLength * yGraphicScale,
             zScaleAll);
 
+        // TO DEVELOP!! Extra case for rendering paths if the subsection is of the MenuSubsectionWithLevelMap tag
 
-        // Generate graphic based on if the option is selected by its subsection
-        bool isSelected = (menuOptionToRender == scriptSubsectionContainingOptionToRender.getCurrentlySelectedOption()); // is this option selected by its subsection?
 
-        var optionRenderer = scriptMenuOptionToRender.GetComponent<Renderer>();
-        if (isSelected == true) 
+        // If this menudiv has children, render those
+        if (menuDivToRenderHasChildren)
         {
-            optionRenderer.material.color = new Color(1, 0, 0, 1);
-        } 
-        else 
-        {
-            optionRenderer.material.color = new Color(1, 1, 1, 1);
+            foreach (GameObject childMenuDiv in scriptMenuDivToRender.childMenuDivs)
+            {
+                renderMenuDiv(childMenuDiv, menuDivToRender);
+            }
         }
-
-          // TO DEVELOP!! Extra case for rendering paths if the subsection is of the MenuSubsectionWithLevelMap tag
     }
-
-	void renderRooms(GameObject levelToRender, float gridScale, float smallestRoomScale, float xForMapOriginPoint, float yForMapOriginPoint, float yScaleRooms) 
-    {
-		foreach(GameObject room in levelToRender.GetComponent<scriptLevel>().rooms) 
-        {
-			var scriptRoom = room.GetComponent<scriptRoom>();
-			float xForGeographicalRoomPosition = scriptRoom.xSimplePosition; // x coordinate for this room's game-world position (not where it's being rendered on screen)
-			float yForGeographicalRoomPosition = scriptRoom.ySimplePosition; // y coordinate for this room's game-world position (not where it's being rendered on screen)
-			float geographicalRoomSize = scriptRoom.size; // this room's game-world size (not the size it's being rendered at on screen)
-
-			// Position room on map
-			room.transform.position = new Vector3(xForMapOriginPoint + (xForGeographicalRoomPosition * gridScale), // x coordinate to render this room at (offset from the map origin point by the game-world position of the room multiplied by the map scale)
-				                                    yForMapOriginPoint + ((yForGeographicalRoomPosition * gridScale) * yScaleRooms), // y coordinate to render this room at (offset from the map origin point by the game-world position of the room multiplied by the map scale)
-				                                    -0.1f); // z coordinate to render paths behind the rooms, this will probably be phased out later, or replaced with some better form of layering
-
-			// Scale room on map
-			float renderScale = smallestRoomScale * (geographicalRoomSize + 1); // scale room on map based on the smallest set size a room can be rendered, multiplied by the game-world size of the room 
-			room.transform.localScale = new Vector3(renderScale, renderScale * yScaleRooms, zScaleAll);
-
-			// Render room color based on selection (will probably be phased out or altered as the visual style is implemented)
-			bool isSelected = scriptRoom.isSelected; // is this the room the player is selecting on the map?
-			var roomRenderer = room.GetComponent <Renderer>();
-			if (isSelected == true) 
-            {
-				roomRenderer.material.color = new Color(1, 0, 0, 1);
-			} 
-            else 
-            {
-				roomRenderer.material.color = new Color(1, 1, 1, 1);
-			}
-		}
-	}
 
 	void renderPassagewayConnections(GameObject levelToRender, float gridScale, float xForMapOriginPoint, float yForMapOriginPoint, float yScaleRooms) 
     {
