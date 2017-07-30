@@ -10,7 +10,7 @@ public class scriptGameManager : MonoBehaviour
     public GameObject menuManager;                  // Manages the hierarchy of menus, and what is currently selected
 	public GameObject world;                      	// The world that this instance of the game takes place in (there should only ever be one being developed, but who knows)
 	public GameObject player;                     	// The player character for this instance of the game
-	// !add currentTime later!
+	// TODO: add currentTime later
 
 
 	// Private Variables
@@ -48,6 +48,8 @@ public class scriptGameManager : MonoBehaviour
 
 	void checkInputs() 
 	{
+        var scriptMenuManager = menuManager.GetComponent<scriptMenuManager>();
+
         // Declare variables to define menu movement direction and value
         float xTranslation = 0;
         float yTranslation = 0;
@@ -84,25 +86,20 @@ public class scriptGameManager : MonoBehaviour
             Input.GetKeyDown(KeyCode.RightArrow))
         {
             scriptWorld.translateEntityInTheirLevel(player.gameObject, xTranslation, yTranslation);
-            var scriptMenuManager = menuManager.GetComponent<scriptMenuManager>();
             var scriptCurrentlySelectedMenuDiv = scriptMenuManager.currentlySelectedMenuDiv.GetComponent<scriptMenuDiv>();
 
             scriptMenuManager.moveCurrentMenuDivSelectionUsingDirectionalInput(xTranslation, yTranslation);
         }
+            
+        // Check for button input corrosponding to the Map Menu, and toggle that menu if so
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            GameObject mapMenuSearchResult = scriptMenuManager.majorMenuDivs.SingleOrDefault(majorMenuDiv => majorMenuDiv.GetComponent<scriptMenuDiv>().tag == "LevelMapMenu");
 
-
-//        // Menu Toggle Inputs
-//        scriptMenuManager = menuManager.GetComponent<scriptMenuManager>();
-//
-//        // Select Map Menu
-//        if (Input.GetKeyDown(KeyCode.Space))
-//        {
-//            GameObject mapMenuSearchResult = scriptMenuManager.majorMenuDivs.SingleOrDefault(majorMenuDiv => majorMenuDiv.GetComponent<scriptMenuDiv>().tag == "LevelMapMenu");
-//
-//            if (mapMenuSearchResult != null)
-//            {
-//                scriptMenuManager.changeSelectedMajorMenuDivUsingHotkey(mapMenuSearchResult);
-//            }
-//        }
+            if (mapMenuSearchResult != null)
+            {
+                scriptMenuManager.changeSelectedMajorMenuDivUsingHotkey(mapMenuSearchResult);
+            }
+        }
 	}
 }

@@ -18,7 +18,7 @@ public class scriptMenuManager: MonoBehaviour
     {
         currentlySelectedMenuDiv = defaultSelectedMenuDiv; // set currently selected menu to the default menu
 
-        // HACK: this is just for testing
+        // HACK: this is just a testing setup to generate children specifically for the map
         foreach (GameObject majorMenuDiv in majorMenuDivs)
         {
             foreach (GameObject section in majorMenuDiv.GetComponent<scriptMenuDiv>().childMenuDivs)
@@ -47,7 +47,7 @@ public class scriptMenuManager: MonoBehaviour
         }
         else
         {
-            currentlySelectedMenuDiv = menuDivSelectionInput;
+            currentlySelectedMenuDiv = defaultSelectedMenuDiv;
         }
     }
 
