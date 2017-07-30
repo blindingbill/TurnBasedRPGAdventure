@@ -20,7 +20,8 @@ public class scriptMenuDiv : MonoBehaviour {
 
     public List<GameObject> defaultCollectionsToConvertToChildren;  // a collection (ex: level of rooms, inventory of items, room of entities) to base the options for this section off of
     public List<GameObject> currentCollectionsToConvertToChildren;  
-    public List<GameObject> childMenuDivs;                          // menu divs that belong under this menu div (sections, subsections, options, etc.)   
+    public List<GameObject> childMenuDivs;                          // menu divs that belong under this menu div (sections, subsections, options, etc.)
+    public GameObject representedGameObject;                  // OPTIONAL: the gameObject that this menudiv respresents
     public float childCellDefaultXLength;                           // the default horizontal cell length of this div's children
     public float childCellDefaultYLength;                           // the default vertical cell length of this div's children
     public float childGraphicDefaultXScale;                         // the default horizontal graphic scale of this div's children
@@ -60,7 +61,8 @@ public class scriptMenuDiv : MonoBehaviour {
         return childMenuDivs.SingleOrDefault(childMenuDiv =>
             childMenuDiv.GetComponent<scriptMenuDiv>().xSimplePosition == xInput &&
             childMenuDiv.GetComponent<scriptMenuDiv>().ySimplePosition == yInput &&
-            childMenuDiv.GetComponent<scriptMenuDiv>().zSimplePosition == zInput);
+            childMenuDiv.GetComponent<scriptMenuDiv>().zSimplePosition == zInput &&
+            childMenuDiv.GetComponent<scriptMenuDiv>().isInParentsSimpleGrid == true);
     }
 
     public GameObject getCurrentlySelectedChildMenuDiv()

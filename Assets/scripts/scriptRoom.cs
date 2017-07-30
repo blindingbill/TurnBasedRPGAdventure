@@ -13,17 +13,13 @@ public class scriptRoom: MonoBehaviour
 	public List <GameObject> entities;          // all the objects rendered on the viewport lineup (characters, landmarks, items)    
 
 	// Private Variables
-	public bool isSelected = false; // is this the room the player is selecting on the map?
+
 
 
 	// Use this for initialization
 	void Start() 
 	{
-		// Set room to selected if it is at position 0, 0 (default position)
-		if (xSimplePosition == 0 && ySimplePosition == 0) 
-		{
-			isSelected = true;
-		}
+
 	}
 
 	// Update is called once per frame

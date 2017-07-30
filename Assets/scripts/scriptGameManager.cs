@@ -40,7 +40,7 @@ public class scriptGameManager : MonoBehaviour
         var scriptRenderManager = renderManager.GetComponent<scriptRenderManager>();
         foreach (GameObject majorMenuDiv in scriptMenuManager.majorMenuDivs)
         {
-            scriptRenderManager.renderMenuDiv(majorMenuDiv);
+            scriptRenderManager.renderMenuDiv(this.gameObject, majorMenuDiv);
         }
             
 		checkInputs();	// check for directional inputs and move menu selections accordingly
@@ -83,7 +83,6 @@ public class scriptGameManager : MonoBehaviour
             Input.GetKeyDown(KeyCode.LeftArrow) ||
             Input.GetKeyDown(KeyCode.RightArrow))
         {
-            scriptCurrentLevelLocation.moveRoomSelection(xTranslation, yTranslation);
             scriptWorld.translateEntityInTheirLevel(player.gameObject, xTranslation, yTranslation);
             var scriptMenuManager = menuManager.GetComponent<scriptMenuManager>();
             var scriptCurrentlySelectedMenuDiv = scriptMenuManager.currentlySelectedMenuDiv.GetComponent<scriptMenuDiv>();

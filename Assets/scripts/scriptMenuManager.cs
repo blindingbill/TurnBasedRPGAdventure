@@ -58,7 +58,7 @@ public class scriptMenuManager: MonoBehaviour
         float yTarget = scriptMenuDivContainingCurrentSelection.yCurrentChildSelection + yInput;
 
         GameObject targetMenuDiv = scriptMenuDivContainingCurrentSelection.getChildMenuDivByCoordinates(xTarget, yTarget);
-        if (targetMenuDiv != null)
+        if (targetMenuDiv != null && targetMenuDiv.GetComponent<scriptMenuDiv>().isInParentsSimpleGrid)
         {
             scriptMenuDivContainingCurrentSelection.xCurrentChildSelection += xInput;
             scriptMenuDivContainingCurrentSelection.yCurrentChildSelection += yInput;
@@ -97,6 +97,7 @@ public class scriptMenuManager: MonoBehaviour
                     GameObject newMenuDivChild = Instantiate(prefabMenuDiv);
                     var scriptNewMenuDivChild = newMenuDivChild.GetComponent<scriptMenuDiv>();
                     var scriptRoom = room.GetComponent<scriptRoom>();
+                    scriptNewMenuDivChild.representedGameObject = scriptRoom.gameObject;
 
                     scriptNewMenuDivChild.isInParentsSimpleGrid = true;
                     scriptNewMenuDivChild.xSimplePosition = scriptRoom.xSimplePosition;
@@ -104,6 +105,19 @@ public class scriptMenuManager: MonoBehaviour
                     scriptNewMenuDivChild.zSimplePosition = scriptRoom.zSimplePosition;
                     scriptNewMenuDivChild.graphicCustomYScale = scriptMenuDiv.childGraphicDefaultYScale * (scriptRoom.size + 1);
                     scriptNewMenuDivChild.graphicCustomXScale = scriptMenuDiv.childGraphicDefaultXScale * (scriptRoom.size + 1);
+
+                    scriptNewMenuDivChild.name = "Child" + i.ToString();
+                    i += 1;
+                    scriptMenuDiv.childMenuDivs.Add(scriptNewMenuDivChild.gameObject);
+                }
+
+                // Convert passagewayConnections into menudivs
+                foreach (GameObject passagewayConnection in collection.GetComponent<scriptLevel>().passagewayConnections)
+                {
+                    GameObject newMenuDivChild = Instantiate(prefabMenuDiv);
+                    var scriptNewMenuDivChild = newMenuDivChild.GetComponent<scriptMenuDiv>();
+                    var scriptPassagewayConnection = passagewayConnection.GetComponent<scriptPassagewayConnection>();
+                    scriptNewMenuDivChild.representedGameObject = scriptPassagewayConnection.gameObject;
 
                     scriptNewMenuDivChild.name = "Child" + i.ToString();
                     i += 1;

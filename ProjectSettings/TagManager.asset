@@ -8,6 +8,7 @@ TagManager:
   - MenuSubsectionWithLevelMap
   - Room
   - Level
+  - PassagewayConnection
   layers:
   - Default
   - TransparentFX

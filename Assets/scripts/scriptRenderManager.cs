@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class scriptRenderManager: MonoBehaviour 
 {
@@ -41,7 +42,7 @@ public class scriptRenderManager: MonoBehaviour
 		renderPassagewayConnections(levelToRender, gridScale, xForFullsizeMapOriginPoint, yForOriginPoint, yScaleRooms);
 	}
 
-    public void renderMenuDiv(GameObject menuDivToRender, GameObject parentOfMenuDivToRender = null)
+    public void renderMenuDiv(GameObject gameManager, GameObject menuDivToRender, GameObject parentOfMenuDivToRender = null)
     {
         // render this menu div
         // check for children
@@ -50,19 +51,16 @@ public class scriptRenderManager: MonoBehaviour
         var scriptMenuDivToRender = menuDivToRender.GetComponent<scriptMenuDiv>();
         var menuDivRenderer = scriptMenuDivToRender.GetComponent<Renderer>();
         bool menuDivToRenderHasChildren = scriptMenuDivToRender.childMenuDivs.Count > 0;
-        float xToRenderAt = 0;
-        float yToRenderAt = 0;
-        float zToRenderAt = -0.1f;
-        float xGraphicScale = scriptMenuDivToRender.graphicCustomXScale;
-        float yGraphicScale = scriptMenuDivToRender.graphicCustomYScale;
+        float xFinalRenderLocation = 0;
+        float yFinalRenderLocation = 0;
+        float zFinalRenderLocation = -0.1f;
+        float zFinalRenderRotation = 0;
+        float xGraphicScaleInCell = scriptMenuDivToRender.graphicCustomXScale;
+        float yGraphicScaleInCell = scriptMenuDivToRender.graphicCustomYScale;
         float xCellLength = scriptMenuDivToRender.cellCustomXLength;
         float yCellLength = scriptMenuDivToRender.cellCustomYLength;
-
-        if (scriptMenuDivToRender.usesCustomGlobalOriginPoint)
-        {
-            xToRenderAt = scriptMenuDivToRender.customGlobalOriginPointX;
-            yToRenderAt = scriptMenuDivToRender.customGlobalOriginPointY;
-        }
+        float xFinalRenderScale = xCellLength * xGraphicScaleInCell;
+        float yFinalRenderScale = yCellLength * yGraphicScaleInCell;
 
         if (parentOfMenuDivToRender != null)
         {
@@ -74,15 +72,37 @@ public class scriptRenderManager: MonoBehaviour
                 var xOffset = scriptMenuDivToRender.xSimplePosition * scriptParentOfMenuDivToRender.childCellDefaultXLength;
                 var yOffset = scriptMenuDivToRender.ySimplePosition * scriptParentOfMenuDivToRender.childCellDefaultYLength;
 
-                xToRenderAt = scriptParentOfMenuDivToRender.transform.position.x + xOffset;
-                yToRenderAt = scriptParentOfMenuDivToRender.transform.position.y + yOffset;
+                xFinalRenderLocation = scriptParentOfMenuDivToRender.transform.position.x + xOffset;
+                yFinalRenderLocation = scriptParentOfMenuDivToRender.transform.position.y + yOffset;
+
+
+                // HACK: isSelected color
+                GameObject currentlySelectedChild = scriptParentOfMenuDivToRender.getCurrentlySelectedChildMenuDiv();
+
+                if (currentlySelectedChild != null)
+                {
+                    var scriptCurrentlySelectedChild = currentlySelectedChild.GetComponent<scriptMenuDiv>();
+                    if (scriptCurrentlySelectedChild.isInParentsSimpleGrid)
+                    {
+                        bool isSelected = (menuDivToRender == currentlySelectedChild); // is this option selected by its subsection?
+
+                        if (isSelected == true)
+                        {
+                            menuDivRenderer.material.color = new Color(1, 0, 0, 1);
+                        }
+                        else
+                        {
+                            menuDivRenderer.material.color = new Color(1, 1, 1, 1);
+                        }
+                    }
+                }
             }
 
             // Graphic Scale
-            if (xGraphicScale == 0)
-                xGraphicScale = scriptParentOfMenuDivToRender.childGraphicDefaultXScale;
-            if (yGraphicScale == 0)
-                yGraphicScale = scriptParentOfMenuDivToRender.childGraphicDefaultXScale;
+            if (xGraphicScaleInCell == 0)
+                xGraphicScaleInCell = scriptParentOfMenuDivToRender.childGraphicDefaultXScale;
+            if (yGraphicScaleInCell == 0)
+                yGraphicScaleInCell = scriptParentOfMenuDivToRender.childGraphicDefaultXScale;
 
             // Cell Length
             if (xCellLength == 0)
@@ -90,37 +110,75 @@ public class scriptRenderManager: MonoBehaviour
             if (yCellLength == 0)
                 yCellLength = scriptParentOfMenuDivToRender.childCellDefaultYLength;
 
-            // HACK: isSelected color
-            GameObject currentlySelectedChild = scriptParentOfMenuDivToRender.getCurrentlySelectedChildMenuDiv();
+            xFinalRenderScale = xCellLength * xGraphicScaleInCell;
+            yFinalRenderScale = yCellLength * yGraphicScaleInCell;
 
-            if (currentlySelectedChild != null)
+
+            // HACK: Passagewayconnections
+            if (scriptMenuDivToRender.representedGameObject != null && scriptMenuDivToRender.representedGameObject.tag == "PassagewayConnection")
             {
-                var scriptCurrentlySelectedChild = currentlySelectedChild.GetComponent<scriptMenuDiv>();
-                if (scriptCurrentlySelectedChild.isInParentsSimpleGrid)
-                {
-                    bool isSelected = (menuDivToRender == currentlySelectedChild); // is this option selected by its subsection?
+                var scriptPassagewayConnection = scriptMenuDivToRender.representedGameObject.GetComponent<scriptPassagewayConnection>();
+                var scriptCurrentWorld = gameManager.GetComponent<scriptGameManager>().world.GetComponent<scriptWorld>();
+                var scriptPassagewayA = scriptPassagewayConnection.passagewayA.GetComponent<scriptEntity>();
+                var scriptRoomA = scriptCurrentWorld.getLocationOfEntity(scriptPassagewayA.gameObject).GetComponent<scriptRoom>();
+                var scriptMenuDivA = scriptParentOfMenuDivToRender.childMenuDivs.SingleOrDefault(childMenuDiv => childMenuDiv.GetComponent<scriptMenuDiv>().representedGameObject == scriptRoomA.gameObject).GetComponent<scriptMenuDiv>();
+                var scriptPassagewayB = scriptPassagewayConnection.passagewayB.GetComponent<scriptEntity>();
+                var scriptRoomB = scriptCurrentWorld.getLocationOfEntity(scriptPassagewayB.gameObject).GetComponent<scriptRoom>();
+                var scriptMenuDivB = scriptParentOfMenuDivToRender.childMenuDivs.SingleOrDefault(childMenuDiv => childMenuDiv.GetComponent<scriptMenuDiv>().representedGameObject == scriptRoomB.gameObject).GetComponent<scriptMenuDiv>();
 
-                    if (isSelected == true)
-                    {
-                        menuDivRenderer.material.color = new Color(1, 0, 0, 1);
-                    }
-                    else
-                    {
-                        menuDivRenderer.material.color = new Color(1, 1, 1, 1);
-                    }
+                float xDifference = scriptMenuDivA.transform.position.x - scriptMenuDivB.transform.position.x;
+                float yDifference = scriptMenuDivA.transform.position.y - scriptMenuDivB.transform.position.y;
+                zFinalRenderRotation = Mathf.Atan2(yDifference, xDifference) * (180 / Mathf.PI);
+
+                // find the slope
+                float slope = 0;
+                bool isVertical = true;
+                if (xDifference != 0)
+                {
+                    slope = (yDifference / xDifference);
+                    isVertical = false;
                 }
+
+                Debug.Log(scriptMenuDivToRender.name + " : " + slope);
+
+                // scale the length of the line to render
+                if (slope != 0)         // if diagonal, increase x scale to fit diagonal distance between two menudivs
+                {
+                    xFinalRenderScale = Mathf.Sqrt(Mathf.Pow(scriptParentOfMenuDivToRender.childCellDefaultXLength, 2) + Mathf.Pow(scriptParentOfMenuDivToRender.childCellDefaultYLength, 2));
+                }
+                else if (slope == 0)    // if not diagonal
+                {
+                    if (isVertical)     // if vertical, set line length to vertical cell length
+                        xFinalRenderScale = yCellLength;
+                    else                // if horizontal, set line length to horizontal cell length
+                        xFinalRenderScale = xCellLength;
+                }
+
+                yFinalRenderScale = 0.05f;  //HACK: Need to provide this value in an inspector somewhere
+
+                // set render location at the midpoint between menudivs
+                xFinalRenderLocation = (scriptMenuDivA.transform.position.x + scriptMenuDivB.transform.position.x) / 2;
+                yFinalRenderLocation = (scriptMenuDivA.transform.position.y + scriptMenuDivB.transform.position.y) / 2;
             }
         }
-            
-        menuDivToRender.transform.position = new Vector3(xToRenderAt,   // coordinate to render this menudiv at
-            yToRenderAt,                                                        
-            zToRenderAt);                                               // HACK: z coordinate to render on a specific layer, should be made customizable in inspector, but I think a lot of layering could end up changing based on context
 
-        menuDivToRender.transform.localScale = new Vector3(xCellLength * xGraphicScale,
-            yCellLength * yGraphicScale,
+        if (scriptMenuDivToRender.usesCustomGlobalOriginPoint)
+        {
+            xFinalRenderLocation = scriptMenuDivToRender.customGlobalOriginPointX;
+            yFinalRenderLocation = scriptMenuDivToRender.customGlobalOriginPointY;
+        }
+            
+        menuDivToRender.transform.position = new Vector3(xFinalRenderLocation,   // coordinate to render this menudiv at
+            yFinalRenderLocation,                                                        
+            zFinalRenderLocation);                                               // HACK: z coordinate to render on a specific layer, should be made customizable in inspector, but I think a lot of layering could end up changing based on context
+
+        menuDivToRender.transform.localScale = new Vector3(xFinalRenderScale,
+            yFinalRenderScale,
             zScaleAll);
 
-        // TO DEVELOP!! Extra case for rendering paths if the subsection is of the MenuSubsectionWithLevelMap tag
+        menuDivToRender.transform.eulerAngles = new Vector3(gameObject.transform.eulerAngles.x,
+            gameObject.transform.eulerAngles.y,
+            zFinalRenderRotation);
 
 
         // If this menudiv has children, render those
@@ -128,7 +186,7 @@ public class scriptRenderManager: MonoBehaviour
         {
             foreach (GameObject childMenuDiv in scriptMenuDivToRender.childMenuDivs)
             {
-                renderMenuDiv(childMenuDiv, menuDivToRender);
+                renderMenuDiv(gameManager, childMenuDiv, menuDivToRender);
             }
         }
     }

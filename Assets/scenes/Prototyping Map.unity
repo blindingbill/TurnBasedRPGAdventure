@@ -160,7 +160,7 @@ Prefab:
       value: 
       objectReference: {fileID: 190959291}
     m_RemovedComponents:
-    - {fileID: 114492254901673774, guid: ed6deb5b19594644c8119aab478a74a6, type: 2}
+    - {fileID: 0}
   m_ParentPrefab: {fileID: 100100000, guid: ed6deb5b19594644c8119aab478a74a6, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &64345987 stripped
@@ -726,6 +726,10 @@ Prefab:
       propertyPath: m_Name
       value: prefabNorthWestPassagewayConnection
       objectReference: {fileID: 0}
+    - target: {fileID: 1678617275085608, guid: 8a03c6c121cb98b45b284b4b65b15980, type: 2}
+      propertyPath: m_TagString
+      value: PassagewayConnection
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8a03c6c121cb98b45b284b4b65b15980, type: 2}
   m_IsPrefabParent: 0
@@ -1234,7 +1238,7 @@ Prefab:
     - target: {fileID: 114929276178815166, guid: b3846583a70cbb84bb41eefff1cb395f,
         type: 2}
       propertyPath: isInParentsSimpleGrid
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114929276178815166, guid: b3846583a70cbb84bb41eefff1cb395f,
         type: 2}
@@ -1323,7 +1327,7 @@ Prefab:
       value: 
       objectReference: {fileID: 1044584115}
     m_RemovedComponents:
-    - {fileID: 114492254901673774, guid: ed6deb5b19594644c8119aab478a74a6, type: 2}
+    - {fileID: 0}
   m_ParentPrefab: {fileID: 100100000, guid: ed6deb5b19594644c8119aab478a74a6, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &1040612718 stripped
@@ -1467,7 +1471,7 @@ Prefab:
       value: 
       objectReference: {fileID: 1044584115}
     m_RemovedComponents:
-    - {fileID: 114492254901673774, guid: ed6deb5b19594644c8119aab478a74a6, type: 2}
+    - {fileID: 0}
   m_ParentPrefab: {fileID: 100100000, guid: ed6deb5b19594644c8119aab478a74a6, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &1333338635 stripped
@@ -1761,6 +1765,10 @@ Prefab:
       propertyPath: m_Name
       value: prefabNorthCenterPassagewayConnection
       objectReference: {fileID: 0}
+    - target: {fileID: 1678617275085608, guid: 8a03c6c121cb98b45b284b4b65b15980, type: 2}
+      propertyPath: m_TagString
+      value: PassagewayConnection
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8a03c6c121cb98b45b284b4b65b15980, type: 2}
   m_IsPrefabParent: 0
@@ -1853,7 +1861,7 @@ Prefab:
       value: 
       objectReference: {fileID: 1044584115}
     m_RemovedComponents:
-    - {fileID: 114492254901673774, guid: ed6deb5b19594644c8119aab478a74a6, type: 2}
+    - {fileID: 0}
   m_ParentPrefab: {fileID: 100100000, guid: ed6deb5b19594644c8119aab478a74a6, type: 2}
   m_IsPrefabParent: 0
 --- !u!1001 &1942363755
@@ -1905,7 +1913,7 @@ Prefab:
       value: The player character.
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 114492254901673774, guid: ed6deb5b19594644c8119aab478a74a6, type: 2}
+    - {fileID: 0}
   m_ParentPrefab: {fileID: 100100000, guid: ed6deb5b19594644c8119aab478a74a6, type: 2}
   m_IsPrefabParent: 0
 --- !u!1001 &2107545965

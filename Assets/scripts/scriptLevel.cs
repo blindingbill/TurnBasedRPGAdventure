@@ -9,8 +9,8 @@ public class scriptLevel: MonoBehaviour
 	public float xWorldMapPosition; // x coordinate for this level location on the world map
 	public float yWorldMapPosition; // y coordinate for this level location on the world map
 
-	public List < GameObject > rooms; // All the rooms in this level
-	public List < GameObject > passagewayConnections; // All the passageway connections (two linked passageways connecting rooms) in this level
+	public List <GameObject> rooms; // All the rooms in this level
+	public List <GameObject> passagewayConnections; // All the passageway connections (two linked passageways connecting rooms) in this level
 
 
 	// Private Variables
@@ -52,37 +52,5 @@ public class scriptLevel: MonoBehaviour
 		}
 			
 		return null;
-	}
-
-	// Move room selected based on key input
-	public void moveRoomSelection(float xChange, float yChange) 
-	{
-
-		GameObject initialRoom = getRoomByCoordinates(xForCurrentRoomSelection, yForCurrentRoomSelection); // Get the GameObject for the currently selected room
-
-		float xRoomTarget = xForCurrentRoomSelection + xChange;
-		float yRoomTarget = yForCurrentRoomSelection + yChange;
-		GameObject targetRoom = getRoomByCoordinates(xRoomTarget, yRoomTarget); // Get the GameObject for the target room
-
-		if (targetRoom != null) // Check if target room exists
-		{
-			if (initialRoom != null) // Check if currently selected room exists (just a precaution)
-			{
-				initialRoom.GetComponent < scriptRoom > ().isSelected = false; // Deselect currently selected room
-			} 
-			else 
-			{
-				Debug.Log("ERROR: Somehow, a room doesn't exist at the coordinates for the currently selected room.");
-			}
-
-			targetRoom.GetComponent < scriptRoom > ().isSelected = true; // Select room targeted by user input
-
-			xForCurrentRoomSelection = xRoomTarget; // Set current room selection coordinates to target coordinates
-			yForCurrentRoomSelection = yRoomTarget;
-		} 
-		else 
-		{
-			Debug.Log("WARNING: There is no room to select based on player inputs, if there is a room in the direction being pushed, there may be an error.");
-		}
 	}
 }
