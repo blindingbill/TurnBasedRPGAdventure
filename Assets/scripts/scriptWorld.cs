@@ -25,12 +25,12 @@ public class scriptWorld : MonoBehaviour
 
 	}
 
-	// Return the room that contains the specified entity (can return either the specific room or general level)
-	public GameObject getLocationOfEntity(GameObject inputEntity, bool getLevel = false) 
+	// FIND THE ROOM OR WORLD AN ENTITY IS IN: Return the room that contains the specified entity (can return either the specific room or general level)
+	public GameObject getLocationOfEntity(GameObject entityInput, bool getLevel = false) 
 	{
 		foreach(GameObject level in levels) 
 		{
-			GameObject roomSearchResult = level.GetComponent<scriptLevel>().getRoomThatContainsSpecifiedEntity(inputEntity);
+            GameObject roomSearchResult = level.GetComponent<scriptLevel>().getRoomThatContainsSpecifiedEntity(entityInput);
 
 			if (roomSearchResult != null) 
 			{
@@ -45,11 +45,19 @@ public class scriptWorld : MonoBehaviour
 			}
 		}
 
-		Debug.Log("ERROR: " + inputEntity.name + " could not be found, or there is an issue with this finding function.");
+        Debug.Log("ERROR: " + entityInput.name + " could not be found, or there is an issue with this finding function.");
 		return null;
 	}
 
-	// Move a specified entity to a specified room
+    // FIND THE TWO ROOMS CONNECTED BY A PASSAGEWAYCONNECTION
+    public List<GameObject> getConnectedRoomsFromPassagewayConnection(GameObject inputPassagewayConnection)
+    {
+        var scriptInputPassagewayConnection = inputPassagewayConnection.GetComponent<scriptPassagewayConnection>();
+        return new List<GameObject> { this.getLocationOfEntity(scriptInputPassagewayConnection.passagewayA), 
+                                      this.getLocationOfEntity(scriptInputPassagewayConnection.passagewayB) };
+    }
+
+	// MOVE AN ENTITY INTO A SPECIFIC ROOM: Move a specified entity to a specified room
 	public void moveEntityToSpecificRoom(GameObject entityToMove, GameObject targetRoom)
 	{
 		GameObject initialRoom = getLocationOfEntity(entityToMove);				    // find the current room the entity lives in
@@ -57,8 +65,8 @@ public class scriptWorld : MonoBehaviour
         targetRoom.GetComponent<scriptRoom>().entities.Add(entityToMove);		    // add entity to target room
 	}
 
-	// Move an entity to a room in their current level using an xy translation
-	public void translateEntityInTheirLevel(GameObject entityToMove, float xChange, float yChange) 
+	// XYZ TRANSLATE AN ENTITY IN THEIR LEVEL: Move an entity to a room in their current level using an xyz translation
+	public void translateEntityInTheirLevel(GameObject entityToMove, float xChange, float yChange)  // <TODO> Need to add z translation to translateEntityInTheirLevel I think, for floor movement.
 	{
         var scriptLevelContainingEntityToMove = getLocationOfEntity(entityToMove, true).GetComponent<scriptLevel>();
         var scriptRoomContainingEntityToMove = scriptLevelContainingEntityToMove.getRoomThatContainsSpecifiedEntity(entityToMove).GetComponent<scriptRoom>();

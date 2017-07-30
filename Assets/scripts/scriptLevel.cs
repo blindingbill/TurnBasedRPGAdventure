@@ -30,15 +30,15 @@ public class scriptLevel: MonoBehaviour
 		
 	}
 		
-	// Return the room GameObject located at the coordinate parameters
-	public GameObject getRoomByCoordinates(float xInput, float yInput) 
+	// USE SIMPLE XYZ COORDINATES TO FIND A ROOM IN THIS LEVEL: Return the room GameObject located at the coordinate parameters
+	public GameObject getRoomByCoordinates(float xInput, float yInput)  // <TODO> Add Z coordinate search for floors
 	{
 		return rooms.SingleOrDefault(room =>
 			room.GetComponent<scriptRoom>().xSimplePosition == xInput &&
             room.GetComponent<scriptRoom>().ySimplePosition == yInput);
 	}
 
-	// Return the room that contains the specified entity
+	// GET THE ROOM THAT A PROVIDED ENTITY IS IN: Return the room that contains the specified entity
 	public GameObject getRoomThatContainsSpecifiedEntity(GameObject inputEntity) 
 	{
 		foreach(GameObject room in rooms) 

@@ -18,7 +18,7 @@ public class scriptMenuManager: MonoBehaviour
     {
         currentlySelectedMenuDiv = defaultSelectedMenuDiv; // set currently selected menu to the default menu
 
-        // HACK: this is just a testing setup to generate children specifically for the map
+        // <HACK> this is just a testing setup to generate children specifically for the map
         foreach (GameObject majorMenuDiv in majorMenuDivs)
         {
             foreach (GameObject section in majorMenuDiv.GetComponent<scriptMenuDiv>().childMenuDivs)
@@ -37,7 +37,7 @@ public class scriptMenuManager: MonoBehaviour
 
     }
 
-    // Change the selected menu, and render the results
+    // CHANGE MAJOR MENU WITH HOTKEYS: Change the selected majorMenuDiv, and render the results
     public void changeSelectedMajorMenuDivUsingHotkey(GameObject menuDivSelectionInput)
     {
         // Change the menu manager's selected menu to the one provided, if that is already selected, return selection to default
@@ -51,6 +51,7 @@ public class scriptMenuManager: MonoBehaviour
         }
     }
 
+    // PLAYER DIRECTIONAL INPUTS MOVE SELECTION IN CURRENTLY SELECTED MENUDIV: directionally change the selected child in the currently selected menuDiv
     public void moveCurrentMenuDivSelectionUsingDirectionalInput(float xInput, float yInput)
     {
         var scriptMenuDivContainingCurrentSelection = currentlySelectedMenuDiv.GetComponent<scriptMenuDiv>().getLowestSelectedMenuDivContainingChildren().GetComponent<scriptMenuDiv>();
@@ -69,7 +70,7 @@ public class scriptMenuManager: MonoBehaviour
         }
     }
 
-    // Update all map menu subsections with the player's current level location for their default level to render
+    // <TODO> Update all map menu subsections with the player's current level location for their default level to render
 //    public void updateAllMapSubsectionsWithPlayerLevelLocation(GameObject playerCurrentLevelLocation)
 //    {
 //        GameObject[] menuMapSubsections = GameObject.FindGameObjectsWithTag("MenuSubsectionWithLevelMap");
@@ -80,18 +81,18 @@ public class scriptMenuManager: MonoBehaviour
 //        }
 //    }
 
-    // Convert the collection of objects designated for a menudiv into a list child menudivs
+    // GENERATE MENUDIV CHILDREN FROM GAMEOBJECT CONTAINING GAMEOBJECTS: Convert the collection of objects designated for a menudiv into a list child menudivs
     void generateChildrenForMenuDiv(GameObject menuDiv)
     {
         var scriptMenuDiv = menuDiv.GetComponent<scriptMenuDiv>();
-        var i = 1;  // HACK: need to find a better way to generate names for these children, if it's even nessesary
+        var i = 1;                                                  // <TODO>: need to find a better way to generate names for these children, if it's even nessesary
 
         foreach (GameObject collection in scriptMenuDiv.currentCollectionsToConvertToChildren)
         {
-            // Find what object type the collection that will be represented with children is, so that it can be correctly converted into menudivs
+            // LEVEL: convert the contents of a level into menudivs
             if (collection.tag == "Level")
             {
-                // Convert rooms into menudivs
+                // ROOMS: Convert rooms into menudivs
                 foreach (GameObject room in collection.GetComponent<scriptLevel>().rooms)
                 {
                     GameObject newMenuDivChild = Instantiate(prefabMenuDiv);
@@ -111,7 +112,7 @@ public class scriptMenuManager: MonoBehaviour
                     scriptMenuDiv.childMenuDivs.Add(scriptNewMenuDivChild.gameObject);
                 }
 
-                // Convert passagewayConnections into menudivs
+                // PASSAGEWAYCONNECTIONS: Convert passagewayConnections into menudivs
                 foreach (GameObject passagewayConnection in collection.GetComponent<scriptLevel>().passagewayConnections)
                 {
                     GameObject newMenuDivChild = Instantiate(prefabMenuDiv);

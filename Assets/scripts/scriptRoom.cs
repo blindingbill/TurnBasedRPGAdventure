@@ -28,7 +28,7 @@ public class scriptRoom: MonoBehaviour
 
 	}
 
-	// Remove a specified entity from the room
+	// REMOVE A SPECIFIED ENTITY FROM THIS ROOM
 	public void removeEntityFromRoom(GameObject entityToRemove)
 	{
 		GameObject entityInThisRoom = entities.SingleOrDefault(entity => entity == entityToRemove);

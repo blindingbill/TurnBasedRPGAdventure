@@ -10,15 +10,15 @@ public class scriptEntity: MonoBehaviour
 	public Sprite frontSprite;
 	public Sprite backSprite;
 	public Sprite deadOrDestroyedSprite;
-	public List < Sprite > additionalSprites;
+	public List <Sprite> additionalSprites;
 
 	public int baseStealth;
 	public int currentStealth;
 
-	public List < GameObject > customActionsWhenTargeted;
-	public List < GameObject > customActionsWhenHeld;
+	public List <GameObject> customActionsWhenTargeted;
+	public List <GameObject> customActionsWhenHeld;
 
-	public List < GameObject > statusEffects;
+	public List <GameObject> statusEffects;
 
 	public bool isPassageway;
 	public GameObject passageWayLinksTo;
@@ -39,7 +39,7 @@ public class scriptEntity: MonoBehaviour
 	public int currentHP;
 
 	public bool hasInventory;
-	public List < GameObject > inventory;
+	public List <GameObject> inventory;
 	public int baseMaxCarryWeight;
 	public int currentMaxCarryWeight;
 	public int currentCarryWeight;

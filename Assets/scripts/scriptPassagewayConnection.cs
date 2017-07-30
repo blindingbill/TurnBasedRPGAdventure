@@ -7,7 +7,7 @@ public class scriptPassagewayConnection: MonoBehaviour
 
 	// Inspector Variables
 
-	public GameObject passagewayA; // the passageways that are linked together
+	public GameObject passagewayA; // the passageways that are linked together by this passagewayConnection
 	public GameObject passagewayB;
 
 	// Private Variables

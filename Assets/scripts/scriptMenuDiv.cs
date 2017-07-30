@@ -21,7 +21,7 @@ public class scriptMenuDiv : MonoBehaviour {
     public List<GameObject> defaultCollectionsToConvertToChildren;  // a collection (ex: level of rooms, inventory of items, room of entities) to base the options for this section off of
     public List<GameObject> currentCollectionsToConvertToChildren;  
     public List<GameObject> childMenuDivs;                          // menu divs that belong under this menu div (sections, subsections, options, etc.)
-    public GameObject representedGameObject;                  // OPTIONAL: the gameObject that this menudiv respresents
+    public GameObject representedGameObject;                        // OPTIONAL: the gameObject that this menudiv respresents
     public float childCellDefaultXLength;                           // the default horizontal cell length of this div's children
     public float childCellDefaultYLength;                           // the default vertical cell length of this div's children
     public float childGraphicDefaultXScale;                         // the default horizontal graphic scale of this div's children
@@ -56,6 +56,7 @@ public class scriptMenuDiv : MonoBehaviour {
 
     }
 
+    // USE SIMPLEGRID XYZ COORDINATES TO FIND CHILD MENUDIV IN THIS MENUDIV
     public GameObject getChildMenuDivByCoordinates(float xInput, float yInput, float zInput = 0)
     {
         return childMenuDivs.SingleOrDefault(childMenuDiv =>
@@ -65,11 +66,13 @@ public class scriptMenuDiv : MonoBehaviour {
             childMenuDiv.GetComponent<scriptMenuDiv>().isInParentsSimpleGrid == true);
     }
 
+    // GET CURRENTLYSELECTED CHILD MENUDIV IN THIS MENUDIV
     public GameObject getCurrentlySelectedChildMenuDiv()
     {
         return getChildMenuDivByCoordinates(xCurrentChildSelection, yCurrentChildSelection, zCurrentChildSelection);
     }
 
+    // GET THE LOWEST CURRENTLY SELECTED MENU THAT CONTAINS CHILDREN: primarily used to get the container that the player's cursor has current control over
     public GameObject getLowestSelectedMenuDivContainingChildren()
     {
         GameObject tempParentMenuDiv = null;

@@ -10,7 +10,7 @@ public class scriptGameManager : MonoBehaviour
     public GameObject menuManager;                  // Manages the hierarchy of menus, and what is currently selected
 	public GameObject world;                      	// The world that this instance of the game takes place in (there should only ever be one being developed, but who knows)
 	public GameObject player;                     	// The player character for this instance of the game
-	// TODO: add currentTime later
+	// <TODO> add currentTime later
 
 
 	// Private Variables
@@ -46,19 +46,17 @@ public class scriptGameManager : MonoBehaviour
 		checkInputs();	// check for directional inputs and move menu selections accordingly
 	}
 
+    // CHECK FOR USER CONTROL INPUTS: run appropriate functions based on user inputs <TODO> Replace specific key controls with generic controls
 	void checkInputs() 
 	{
         var scriptMenuManager = menuManager.GetComponent<scriptMenuManager>();
-
-        // Declare variables to define menu movement direction and value
-        float xTranslation = 0;
-        float yTranslation = 0;
-
-        // Get components
         var scriptWorld = world.GetComponent<scriptWorld>();
         var scriptCurrentLevelLocation = playerCurrentLevelLocation.GetComponent<scriptLevel>();
 
-        // Define menu translations
+        // GET DIRECTIONAL INPUTS: Define menu translations
+        float xTranslation = 0;                             // default translations to 0
+        float yTranslation = 0;
+
 		if (Input.GetKeyDown(KeyCode.DownArrow)) 
 		{
             yTranslation += -1;
@@ -79,7 +77,7 @@ public class scriptGameManager : MonoBehaviour
             xTranslation += 1;
 		}
 
-        // If any directional input was pushed, execute selection
+        // MOVE MENU SELECTION WITH DIRECTIONAL INPUT: If any directional input was pushed, execute selection
         if (Input.GetKeyDown(KeyCode.DownArrow) ||
             Input.GetKeyDown(KeyCode.UpArrow) ||
             Input.GetKeyDown(KeyCode.LeftArrow) ||
@@ -91,7 +89,7 @@ public class scriptGameManager : MonoBehaviour
             scriptMenuManager.moveCurrentMenuDivSelectionUsingDirectionalInput(xTranslation, yTranslation);
         }
             
-        // Check for button input corrosponding to the Map Menu, and toggle that menu if so
+        // HOTKEY FOR MAP MENU: Check for button input corrosponding to the Map Menu, and toggle that menu if so
         if (Input.GetKeyDown(KeyCode.Space))
         {
             GameObject mapMenuSearchResult = scriptMenuManager.majorMenuDivs.SingleOrDefault(majorMenuDiv => majorMenuDiv.GetComponent<scriptMenuDiv>().tag == "LevelMapMenu");
