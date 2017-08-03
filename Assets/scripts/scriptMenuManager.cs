@@ -5,18 +5,20 @@ using UnityEngine;
 public class scriptMenuManager: MonoBehaviour 
 {
     // Inspector Variables
-    public List<GameObject> majorMenuDivs;          // the major menus that make up the game, a menu generally takes up an entire screen and is overlayed over the main menu with a player input
-    public GameObject currentlySelectedMenuDiv;     // the current menu that is in focus
-    public GameObject defaultSelectedMenuDiv;       // the initial menu that will is in focus
-    public GameObject prefabMenuDiv;                // the basic menudiv template to instantiate menudivs with
+    public List<GameObject> majorMenuDivs;              // the major menus that make up the game, a menu generally takes up an entire screen and is overlayed over the main menu with a player input
+    public GameObject defaultSelectedMajorMenuDiv;      // the initial menu that will is in focus
+    public List<GameObject> activeMajorMenuDivs;        // the list of on-screen menus, the order determines the layers they're rendered at, returning to a lower item on the list will remove the item you left from
+
+    public GameObject prefabMenuDiv;                    // the basic menudiv template to instantiate menudivs with
+
 
     // Private Variables
-
+    GameObject currentlySelectedMajorMenuDiv;
 
     // Use this for initialization
     void Start() 
     {
-        currentlySelectedMenuDiv = defaultSelectedMenuDiv; // set currently selected menu to the default menu
+        activeMajorMenuDivs = new List<GameObject> {defaultSelectedMajorMenuDiv};   // set the lowest item in the activeMajorMenuDivs to the default major menuDiv
 
         // <HACK> this is just a testing setup to generate children specifically for the map
         foreach (GameObject majorMenuDiv in majorMenuDivs)
@@ -34,27 +36,30 @@ public class scriptMenuManager: MonoBehaviour
     // Update is called once per frame
     void Update() 
     {
-
+        // UPDATE CURRENTLY SELECTED MAJOR MENU DIV WITH LAST ACTIVE MENU DIV ITEM
+        currentlySelectedMajorMenuDiv = activeMajorMenuDivs[activeMajorMenuDivs.Count - 1];
     }
 
     // CHANGE MAJOR MENU WITH HOTKEYS: Change the selected majorMenuDiv, and render the results
     public void changeSelectedMajorMenuDivUsingHotkey(GameObject menuDivSelectionInput)
     {
-        // Change the menu manager's selected menu to the one provided, if that is already selected, return selection to default
-        if (currentlySelectedMenuDiv != menuDivSelectionInput)
+        if (menuDivSelectionInput == currentlySelectedMajorMenuDiv)
         {
-            currentlySelectedMenuDiv = menuDivSelectionInput;
+            activeMajorMenuDivs.Remove(menuDivSelectionInput);
+            // <TODO> Rerender removed menu AKA delete menuDiv and all its children
         }
         else
         {
-            currentlySelectedMenuDiv = defaultSelectedMenuDiv;
+            activeMajorMenuDivs.Add(menuDivSelectionInput);
+            // <TODO> Render new menu
         }
     }
 
     // PLAYER DIRECTIONAL INPUTS MOVE SELECTION IN CURRENTLY SELECTED MENUDIV: directionally change the selected child in the currently selected menuDiv
     public void moveCurrentMenuDivSelectionUsingDirectionalInput(float xInput, float yInput)
     {
-        var scriptMenuDivContainingCurrentSelection = currentlySelectedMenuDiv.GetComponent<scriptMenuDiv>().getLowestSelectedMenuDivContainingChildren().GetComponent<scriptMenuDiv>();
+        GameObject currentlySelectedMajorMenuDiv = activeMajorMenuDivs[activeMajorMenuDivs.Count - 1];
+        var scriptMenuDivContainingCurrentSelection = currentlySelectedMajorMenuDiv.GetComponent<scriptMenuDiv>().getLowestSelectedMenuDivContainingChildren().GetComponent<scriptMenuDiv>();
         float xTarget = scriptMenuDivContainingCurrentSelection.xCurrentChildSelection + xInput;
         float yTarget = scriptMenuDivContainingCurrentSelection.yCurrentChildSelection + yInput;
 
@@ -107,8 +112,7 @@ public class scriptMenuManager: MonoBehaviour
                     scriptNewMenuDivChild.graphicCustomYScale = scriptMenuDiv.childGraphicDefaultYScale * (scriptRoom.size + 1);
                     scriptNewMenuDivChild.graphicCustomXScale = scriptMenuDiv.childGraphicDefaultXScale * (scriptRoom.size + 1);
 
-                    scriptNewMenuDivChild.name = "Child" + i.ToString();
-                    i += 1;
+                    scriptNewMenuDivChild.name = "menuDiv" + room.name;
                     scriptMenuDiv.childMenuDivs.Add(scriptNewMenuDivChild.gameObject);
                 }
 
@@ -120,7 +124,7 @@ public class scriptMenuManager: MonoBehaviour
                     var scriptPassagewayConnection = passagewayConnection.GetComponent<scriptPassagewayConnection>();
                     scriptNewMenuDivChild.representedGameObject = scriptPassagewayConnection.gameObject;
 
-                    scriptNewMenuDivChild.name = "Child" + i.ToString();
+                    scriptNewMenuDivChild.name = "menuDiv" + passagewayConnection.name;
                     i += 1;
                     scriptMenuDiv.childMenuDivs.Add(scriptNewMenuDivChild.gameObject);
                 }
