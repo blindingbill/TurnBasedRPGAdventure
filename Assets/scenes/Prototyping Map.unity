@@ -838,7 +838,7 @@ Prefab:
         type: 2}
       propertyPath: defaultSelectedMajorMenuDiv
       value: 
-      objectReference: {fileID: 501541000}
+      objectReference: {fileID: 222429404}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 647a82583b686e442a7cb26628c52f6e, type: 2}
   m_IsPrefabParent: 0
@@ -928,6 +928,26 @@ Prefab:
     - target: {fileID: 114929276178815166, guid: b3846583a70cbb84bb41eefff1cb395f,
         type: 2}
       propertyPath: customGlobalOriginPointX
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114929276178815166, guid: b3846583a70cbb84bb41eefff1cb395f,
+        type: 2}
+      propertyPath: cellCustomXLength
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114929276178815166, guid: b3846583a70cbb84bb41eefff1cb395f,
+        type: 2}
+      propertyPath: cellCustomYLength
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114929276178815166, guid: b3846583a70cbb84bb41eefff1cb395f,
+        type: 2}
+      propertyPath: graphicCustomXScale
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114929276178815166, guid: b3846583a70cbb84bb41eefff1cb395f,
+        type: 2}
+      propertyPath: graphicCustomYScale
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

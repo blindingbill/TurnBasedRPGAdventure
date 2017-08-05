@@ -42,7 +42,10 @@ public class scriptGameManager : MonoBehaviour
         var scriptRenderManager = renderManager.GetComponent<scriptRenderManager>();
         foreach (GameObject majorMenuDiv in scriptMenuManager.majorMenuDivs)
         {
-            scriptRenderManager.renderMenuDiv(this.gameObject, majorMenuDiv);
+            var isCurrentMajorMenuDivVisible = false;
+            if (scriptMenuManager.activeMajorMenuDivs.Contains(majorMenuDiv))
+                isCurrentMajorMenuDivVisible = true;
+            scriptRenderManager.renderMenuDiv(this.gameObject, majorMenuDiv, isCurrentMajorMenuDivVisible);
         }
             
 		checkInputs();	// check for directional inputs and move menu selections accordingly

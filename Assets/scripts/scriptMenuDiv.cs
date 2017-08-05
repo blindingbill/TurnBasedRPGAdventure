@@ -6,15 +6,19 @@ using System.Linq;
 public class scriptMenuDiv : MonoBehaviour {
 
     // Inspector Variables
+    public bool isOnlyVisibleWhenSelected;                          // if true, this menudiv and all its descendants are only visible when this menudiv is selected by its parent
+
     public bool isInParentsSimpleGrid;                              // does this menu div exist on the simple grid of its parent?
     public float xSimplePosition;                                   // simple coordinate for where this option is positioned in its parent, not nessesarily where it is rendered on the screen
     public float ySimplePosition;                                  
     public float zSimplePosition;                                  
 
-    public float xDefaultChildSelection;                           // the coordinate of the current child that is selected in this menu div
+    public GameObject defaultChildSelection;                        // the specific game object to select by default, if this is used then this div's simple grid seleciton values won't be taken into account
+    public GameObject currentChildSelection;                        // the specific game object that is selected, automatically updated 
+    public float xDefaultChildSelection;                            // the coordinate of the current child that is selected in this menu div
     public float yDefaultChildSelection;                           
-    public float zDefaultChildSelection;                           
-    public float xCurrentChildSelection;                           // the coordinate of the default child that is selected when entering this menu div
+    public float zDefaultChildSelection;
+    public float xCurrentChildSelection;                            // the coordinate of the default child that is selected when entering this menu div
     public float yCurrentChildSelection;                           
     public float zCurrentChildSelection;                           
 
@@ -43,17 +47,29 @@ public class scriptMenuDiv : MonoBehaviour {
     // Use this for initialization
     void Start() 
     {
+        // <TODO> Put this in a more appropriate place since this will be happening more than once
         currentCollectionsToConvertToChildren = defaultCollectionsToConvertToChildren;
 
+        // Set simple grid selections to defaults
         xCurrentChildSelection = xDefaultChildSelection;
         yCurrentChildSelection = yDefaultChildSelection;
         zCurrentChildSelection = zDefaultChildSelection;
+
+        // <TODO> If this menudiv has a default child selection, set it to that as a start. Eventually will need to be called at later points.
+        if (defaultChildSelection != null)
+        {
+            currentChildSelection = defaultChildSelection;
+        }
     }
 
     // Update is called once per frame
     void Update() 
     {
-
+        // If menudiv doesn't use specific game object references to its children (if it doesn't have a default selection object reference), then always update with its simple grid child selection
+        if (defaultChildSelection == null)
+        {
+            currentChildSelection = getChildMenuDivByCoordinates(xCurrentChildSelection, yCurrentChildSelection, zCurrentChildSelection);
+        }
     }
 
     // USE SIMPLEGRID XYZ COORDINATES TO FIND CHILD MENUDIV IN THIS MENUDIV
@@ -66,12 +82,6 @@ public class scriptMenuDiv : MonoBehaviour {
             childMenuDiv.GetComponent<scriptMenuDiv>().isInParentsSimpleGrid == true);
     }
 
-    // GET CURRENTLYSELECTED CHILD MENUDIV IN THIS MENUDIV
-    public GameObject getCurrentlySelectedChildMenuDiv()
-    {
-        return getChildMenuDivByCoordinates(xCurrentChildSelection, yCurrentChildSelection, zCurrentChildSelection);
-    }
-
     // GET THE LOWEST CURRENTLY SELECTED MENU THAT CONTAINS CHILDREN: primarily used to get the container that the player's cursor has current control over
     public GameObject getLowestSelectedMenuDivContainingChildren()
     {
@@ -81,7 +91,7 @@ public class scriptMenuDiv : MonoBehaviour {
         while (tempCurrentMenuDiv.GetComponent<scriptMenuDiv>().childMenuDivs.Count > 0)
         {
             tempParentMenuDiv = tempCurrentMenuDiv;
-            tempCurrentMenuDiv = tempCurrentMenuDiv.GetComponent<scriptMenuDiv>().getCurrentlySelectedChildMenuDiv();
+            tempCurrentMenuDiv = tempCurrentMenuDiv.GetComponent<scriptMenuDiv>().currentChildSelection;
         }
 
         return tempParentMenuDiv;

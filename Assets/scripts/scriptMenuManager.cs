@@ -90,7 +90,6 @@ public class scriptMenuManager: MonoBehaviour
     void generateChildrenForMenuDiv(GameObject menuDiv)
     {
         var scriptMenuDiv = menuDiv.GetComponent<scriptMenuDiv>();
-        var i = 1;                                                  // <TODO>: need to find a better way to generate names for these children, if it's even nessesary
 
         foreach (GameObject collection in scriptMenuDiv.currentCollectionsToConvertToChildren)
         {
@@ -125,7 +124,6 @@ public class scriptMenuManager: MonoBehaviour
                     scriptNewMenuDivChild.representedGameObject = scriptPassagewayConnection.gameObject;
 
                     scriptNewMenuDivChild.name = "menuDiv" + passagewayConnection.name;
-                    i += 1;
                     scriptMenuDiv.childMenuDivs.Add(scriptNewMenuDivChild.gameObject);
                 }
             }

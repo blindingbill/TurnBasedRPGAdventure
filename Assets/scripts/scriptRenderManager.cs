@@ -27,13 +27,14 @@ public class scriptRenderManager: MonoBehaviour
     }
 
     // GENERIC MENUDIV RENDERER: Render a generic menuDiv using all the potential custom rendering functions based on what gameobject it represents
-    public void renderMenuDiv(GameObject gameManager, GameObject menuDivToRender, GameObject parentOfMenuDivToRender = null)
+    public void renderMenuDiv(GameObject gameManager, GameObject menuDivToRender, bool isParentVisible, GameObject parentOfMenuDivToRender = null)
     {
         var scriptMenuDivToRender = menuDivToRender.GetComponent<scriptMenuDiv>();          // the current menuDiv to render, all of its children will be rendered as well
         var menuDivToRenderRenderer = scriptMenuDivToRender.GetComponent<Renderer>();       // the renderer component for the menuDivToRender
         var scriptGameManager = gameManager.GetComponent<scriptGameManager>();              // the game manager
         var scriptCurrentWorld = scriptGameManager.world.GetComponent<scriptWorld>();       // the world of this game
         bool menuDivToRenderHasChildren = scriptMenuDivToRender.childMenuDivs.Count > 0;    // does the menuDiv to render have children?
+        bool isMenuDivToRenderVisible = isParentVisible;                                    // is the current menudiv visible?
         float xFinalRenderLocation = 0;                                                     // the xyz coordinates that this menuDiv will ultimately be rendered at, defaulted to 0
         float yFinalRenderLocation = 0;
         float zFinalRenderLocation = -0.1f;                                                 // TODO: The zFinalRenderLocation should probably be used for layers, but it'll have to wait until multiple menu functionality is more fleshed out.
@@ -49,30 +50,51 @@ public class scriptRenderManager: MonoBehaviour
         // DOES THIS MENUDIV HAVE A PARENT?: If the menuDivToRender has a parent (provided in the optional parameter for renderMenuDiv)
         if (parentOfMenuDivToRender != null)
         {
-            var scriptParentOfMenuDivToRender = parentOfMenuDivToRender.GetComponent<scriptMenuDiv>();                                          // the parent menuDiv to the menuDivToRender
-            var scriptCurrentlySelectedChild = scriptParentOfMenuDivToRender.getCurrentlySelectedChildMenuDiv().GetComponent<scriptMenuDiv>();  // the currently selected menuDiv of the parent
-
-
-            // IS THIS MENUDIV PART OF PARENTS SIMPLEGRID?: If the menuDivToRender is part of its parents simple grid (meaning that it is selectable by the player, and not just a detail menuDiv)
-            if (scriptMenuDivToRender.isInParentsSimpleGrid)
+            var scriptParentOfMenuDivToRender = parentOfMenuDivToRender.GetComponent<scriptMenuDiv>();                                        // the parent menuDiv to the menuDivToRender
+            if (scriptParentOfMenuDivToRender.currentChildSelection != null)
             {
-                // SET POSITION USING SIMPLE GRID: Position menuDivToRender based on its simple grid location and cell length
-                var xOffsetFromParent = scriptMenuDivToRender.xSimplePosition * scriptParentOfMenuDivToRender.childCellDefaultXLength;    // TODO: Set up a system to account for custom cell length
-                var yOffsetFromParent = scriptMenuDivToRender.ySimplePosition * scriptParentOfMenuDivToRender.childCellDefaultYLength;
-                xFinalRenderLocation = scriptParentOfMenuDivToRender.transform.position.x + xOffsetFromParent;                            // Offset the menuDivToRender from its parent's location
-                yFinalRenderLocation = scriptParentOfMenuDivToRender.transform.position.y + yOffsetFromParent;
+                var scriptCurrentlySelectedChild = scriptParentOfMenuDivToRender.currentChildSelection.GetComponent<scriptMenuDiv>();         // the currently selected menuDiv of the parent
 
-
-                // IS THIS MENUDIV SELECTED BY ITS PARENT?: If menuDivToRender is selected by its parent, then make appropriate adjustments to how it will render
-                bool isSelected = (menuDivToRender == scriptCurrentlySelectedChild.gameObject);
-
-                if (isSelected == true) // <TODO> As a placeholder, selection turns the menuDiv's material red, eventually this will need to be changed and possibly customizable.
+                // IS THIS MENUDIV PART OF PARENTS SIMPLEGRID?: If the menuDivToRender is part of its parents simple grid (meaning that it is selectable by the player, and not just a detail menuDiv)
+                if (scriptMenuDivToRender.isInParentsSimpleGrid)
                 {
-                    menuDivToRenderRenderer.material.color = new Color(1, 0, 0, 1);
-                }
-                else
-                {
-                    menuDivToRenderRenderer.material.color = new Color(1, 1, 1, 1);
+                    // SET POSITION USING SIMPLE GRID: Position menuDivToRender based on its simple grid location and cell length
+                    var xOffsetFromParent = scriptMenuDivToRender.xSimplePosition * scriptParentOfMenuDivToRender.childCellDefaultXLength;    // TODO: Set up a system to account for custom cell length
+                    var yOffsetFromParent = scriptMenuDivToRender.ySimplePosition * scriptParentOfMenuDivToRender.childCellDefaultYLength;
+                    xFinalRenderLocation = scriptParentOfMenuDivToRender.transform.position.x + xOffsetFromParent;                            // Offset the menuDivToRender from its parent's location
+                    yFinalRenderLocation = scriptParentOfMenuDivToRender.transform.position.y + yOffsetFromParent;
+
+
+                    // IS THIS MENUDIV SELECTED BY ITS PARENT?: If menuDivToRender is selected by its parent, then make appropriate adjustments to how it will render
+                    bool isSelected = (menuDivToRender == scriptCurrentlySelectedChild.gameObject);
+
+
+                    // SET VISIBILITY
+                    if (isParentVisible)
+                    {
+                        if (scriptMenuDivToRender.isOnlyVisibleWhenSelected)
+                        {
+                            if (isSelected)
+                                isMenuDivToRenderVisible = true;
+                            else
+                                isMenuDivToRenderVisible = false;
+                        }
+                        else
+                            isMenuDivToRenderVisible = true;
+                    }
+                    else
+                        isMenuDivToRenderVisible = false;
+
+
+                    // CHANGE GRAPHIC IF SELECTED
+                    if (isSelected) // <TODO> As a placeholder, selection turns the menuDiv's material red, eventually this will need to be changed and possibly customizable.
+                    {
+                        menuDivToRenderRenderer.material.color = new Color(1, 0, 0, 1);
+                    }
+                    else
+                    {
+                        menuDivToRenderRenderer.material.color = new Color(1, 1, 1, 1);
+                    }
                 }
             }
 
@@ -169,12 +191,15 @@ public class scriptRenderManager: MonoBehaviour
             zFinalRenderRotation);                                                                  // Since the game is 2D, only the Z rotation seems to matter
 
 
+        // RENDER AT ALL? <TODO> Make a conditional to stop this entire proccess if not visible
+        menuDivToRenderRenderer.enabled = isMenuDivToRenderVisible;
+
         // RENDER CHILDREN: If menuDivToRender has children, render them all
         if (menuDivToRenderHasChildren)
         {
             foreach (GameObject childMenuDiv in scriptMenuDivToRender.childMenuDivs)
             {
-                renderMenuDiv(gameManager, childMenuDiv, menuDivToRender);
+                renderMenuDiv(gameManager, childMenuDiv, isMenuDivToRenderVisible, menuDivToRender);
             }
         }
     }
